@@ -41,40 +41,42 @@ ReactDOM.render(
 
 var storedToken = localStorage.getItem("id_token");
 if(storedToken !== null){
-  var idToken = storedToken;
 
-  var options = {
-    id_token : idToken,
-    target: '9RjVS1keVE6dzidUUIaeKKxwCYkeClgG',
-    api : 'firebase'
-  };
-
-  // Make a call to the Auth0 '/delegate'
-  auth0.getDelegationToken(options, function(err, result) {
-    if(!err) {
-      // Exchange the delegate token for a Firebase auth token
-      firebase.auth().signInWithCustomToken(result.id_token).then(function(){
-        store.dispatch(login(result.id_token))
-        lock.getProfile(idToken, function (err, profile) {
-          if (err) {
-            return alert('There was an error getting the profile: ' + err.message);
-          }
-          store.dispatch(loadProfile(profile))
+  auth0.renewIdToken(storedToken, function(err, rresult) {
+    var idToken = rresult.id_token;
+    var options = {
+      id_token : rresult.id_token,
+      target: '9RjVS1keVE6dzidUUIaeKKxwCYkeClgG',
+      api : 'firebase'
+    };
+    // Make a call to the Auth0 '/delegate'
+    auth0.getDelegationToken(options, function(err, result) {
+      if(!err) {
+        // Exchange the delegate token for a Firebase auth token
+        firebase.auth().signInWithCustomToken(result.id_token).then(function(){
+          store.dispatch(login(idToken))
+          lock.getProfile(idToken, function (err, profile) {
+            if (err) {
+              return alert('There was an error getting the profile: ' + err.message);
+            }
+            store.dispatch(loadProfile(profile))
+          });
+        }).catch(function(error) {
+          debugger;
+          store.dispatch(logout())
         });
-      }).catch(function(error) {
+      }
+      else {
         debugger;
         store.dispatch(logout())
-      });
-    }
-    else {
-      debugger;
-      store.dispatch(logout())
-    }
+      }
+    });
   });
 }
 else {
   lock.on("authenticated", function(authResult) {
     var idToken = authResult.idToken;
+
     // Set the options to retreive a firebase delegation token
     var options = {
       id_token : idToken,
@@ -87,7 +89,7 @@ else {
       if(!err) {
         // Exchange the delegate token for a Firebase auth token
         firebase.auth().signInWithCustomToken(result.id_token).then(function(){
-          store.dispatch(login(result.id_token))
+          store.dispatch(login(authResult.idToken))
           lock.getProfile(idToken, function (err, profile) {
             if (err) {
               return alert('There was an error getting the profile: ' + err.message);
