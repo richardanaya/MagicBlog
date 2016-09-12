@@ -40,37 +40,16 @@ ReactDOM.render(
 )
 
 var storedToken = localStorage.getItem("id_token");
-if(storedToken !== null){
-
-  auth0.renewIdToken(storedToken, function(err, rresult) {
-    var idToken = rresult.id_token;
-    var options = {
-      id_token : rresult.id_token,
-      target: '9RjVS1keVE6dzidUUIaeKKxwCYkeClgG',
-      api : 'firebase'
-    };
-    // Make a call to the Auth0 '/delegate'
-    auth0.getDelegationToken(options, function(err, result) {
-      if(!err) {
-        // Exchange the delegate token for a Firebase auth token
-        firebase.auth().signInWithCustomToken(result.id_token).then(function(){
-          store.dispatch(login(idToken))
-          lock.getProfile(idToken, function (err, profile) {
-            if (err) {
-              return alert('There was an error getting the profile: ' + err.message);
-            }
-            store.dispatch(loadProfile(profile))
-          });
-        }).catch(function(error) {
-          debugger;
-          store.dispatch(logout())
-        });
-      }
-      else {
-        debugger;
-        store.dispatch(logout())
-      }
-    });
+var storedDelegationToken = localStorage.getItem("delegation_token");
+var storedProfile = localStorage.getItem("profile");
+debugger;
+if(storedToken !== null && storedDelegationToken !== null && storedProfile !== null){
+  firebase.auth().signInWithCustomToken(storedDelegationToken).then(function(){
+    store.dispatch(login(storedToken));
+    store.dispatch(loadProfile(JSON.parse(storedProfile)));
+  }).catch(function(error) {
+    debugger;
+    store.dispatch(logout());
   });
 }
 else {
@@ -87,6 +66,7 @@ else {
     // Make a call to the Auth0 '/delegate'
     auth0.getDelegationToken(options, function(err, result) {
       if(!err) {
+        localStorage.setItem("delegation_token",result.id_token);
         // Exchange the delegate token for a Firebase auth token
         firebase.auth().signInWithCustomToken(result.id_token).then(function(){
           store.dispatch(login(authResult.idToken))
@@ -94,6 +74,7 @@ else {
             if (err) {
               return alert('There was an error getting the profile: ' + err.message);
             }
+            localStorage.setItem("profile",JSON.stringify(profile));
             store.dispatch(loadProfile(profile))
           });
         }).catch(function(error) {

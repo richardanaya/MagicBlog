@@ -9,7 +9,7 @@ function app(props){
   var authSection = props.app.loginToken===null?login:logout;
   return (
     <div>
-        {props.app.loginToken}
+        {props.app.name}
         {authSection}
         {props.children}
     </div>
