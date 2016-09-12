@@ -10,6 +10,8 @@ import About from "./components/about"
 import reducers from './reducers'
 import "./styles/app.less"
 import thunk from 'redux-thunk';
+import {login} from "./actions"
+import {auth0,lock} from "./auth0"
 
 const middleware = [thunk,routerMiddleware(browserHistory)]
 
@@ -36,3 +38,24 @@ ReactDOM.render(
     </Provider>,
     document.getElementById('app')
 )
+
+lock.on("authenticated", function(authResult) {
+  // Set the options to retreive a firebase delegation token
+  var options = {
+    id_token : authResult.idToken,
+    target: '9RjVS1keVE6dzidUUIaeKKxwCYkeClgG',
+    api : 'firebase'
+  };
+
+  // Make a call to the Auth0 '/delegate'
+  auth0.getDelegationToken(options, function(err, result) {
+    if(!err) {
+      // Exchange the delegate token for a Firebase auth token
+      firebase.auth().signInWithCustomToken(result.id_token).then(function(){
+        store.dispatch(login(result.id_token))
+      }).catch(function(error) {
+        console.log(error);
+      });
+    }
+  });
+});
