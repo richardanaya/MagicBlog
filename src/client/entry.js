@@ -39,10 +39,11 @@ ReactDOM.render(
     document.getElementById('app')
 )
 
+//Authentication & Restoration
 var storedToken = localStorage.getItem("id_token");
 var storedDelegationToken = localStorage.getItem("delegation_token");
 var storedProfile = localStorage.getItem("profile");
-debugger;
+
 if(storedToken !== null && storedDelegationToken !== null && storedProfile !== null){
   firebase.auth().signInWithCustomToken(storedDelegationToken).then(function(){
     store.dispatch(login(storedToken));
