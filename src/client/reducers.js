@@ -1,11 +1,14 @@
 
-import {LOGIN,LOGOUT} from "./actions"
+import {LOGIN,LOGOUT,LOAD_PROFILE} from "./actions"
 
 export default function(state = {
+    name: "",
+    picture: "",
     loginToken : null
 }, action) {
     switch (action.type) {
         case LOGIN:
+            localStorage.setItem('id_token',action.loginToken);
             return {
                 ...state,
                 loginToken:action.loginToken
@@ -21,6 +24,12 @@ export default function(state = {
                 ...state,
                 loginToken:null
             }
+        case LOAD_PROFILE:
+          return {
+              ...state,
+              name:action.profile.name,
+              picture:action.profile.picture
+          }
         default:
             return state
     }

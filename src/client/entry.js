@@ -10,7 +10,7 @@ import About from "./components/about"
 import reducers from './reducers'
 import "./styles/app.less"
 import thunk from 'redux-thunk';
-import {login} from "./actions"
+import {login,loadProfile,logout} from "./actions"
 import {auth0,lock} from "./auth0"
 
 const middleware = [thunk,routerMiddleware(browserHistory)]
@@ -39,10 +39,12 @@ ReactDOM.render(
     document.getElementById('app')
 )
 
-lock.on("authenticated", function(authResult) {
-  // Set the options to retreive a firebase delegation token
+var storedToken = localStorage.getItem("id_token");
+if(storedToken !== null){
+  var idToken = storedToken;
+
   var options = {
-    id_token : authResult.idToken,
+    id_token : idToken,
     target: '9RjVS1keVE6dzidUUIaeKKxwCYkeClgG',
     api : 'firebase'
   };
@@ -53,9 +55,54 @@ lock.on("authenticated", function(authResult) {
       // Exchange the delegate token for a Firebase auth token
       firebase.auth().signInWithCustomToken(result.id_token).then(function(){
         store.dispatch(login(result.id_token))
+        lock.getProfile(idToken, function (err, profile) {
+          if (err) {
+            return alert('There was an error getting the profile: ' + err.message);
+          }
+          store.dispatch(loadProfile(profile))
+        });
       }).catch(function(error) {
-        console.log(error);
+        debugger;
+        store.dispatch(logout())
       });
     }
+    else {
+      debugger;
+      store.dispatch(logout())
+    }
   });
-});
+}
+else {
+  lock.on("authenticated", function(authResult) {
+    var idToken = authResult.idToken;
+    // Set the options to retreive a firebase delegation token
+    var options = {
+      id_token : idToken,
+      target: '9RjVS1keVE6dzidUUIaeKKxwCYkeClgG',
+      api : 'firebase'
+    };
+
+    // Make a call to the Auth0 '/delegate'
+    auth0.getDelegationToken(options, function(err, result) {
+      if(!err) {
+        // Exchange the delegate token for a Firebase auth token
+        firebase.auth().signInWithCustomToken(result.id_token).then(function(){
+          store.dispatch(login(result.id_token))
+          lock.getProfile(idToken, function (err, profile) {
+            if (err) {
+              return alert('There was an error getting the profile: ' + err.message);
+            }
+            store.dispatch(loadProfile(profile))
+          });
+        }).catch(function(error) {
+          debugger;
+          store.dispatch(logout())
+        });
+      }
+      else {
+        debugger;
+        store.dispatch(logout())
+      }
+    });
+  });
+}
