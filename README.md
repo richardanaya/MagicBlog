@@ -6,7 +6,7 @@ Check the app out on https://mysterious-spire-72024.herokuapp.com/
 Auth0 for authorization
 Firebase for realtime data model and business logic
 Heroku for hosting
-React+Redux+WebPack
+React+Redux+ReactRouter+WebPack
 
 ```bash
 npm install
