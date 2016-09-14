@@ -32,8 +32,8 @@ class IndexContainer extends Component {
     }
 
     return (
-        <div className="IndexHolder">
-          <div className="IndexContent">
+        <div className="CenterHolder">
+          <div className="CenterHolder">
             <div className="mdl-grid">
               {timeline}
             </div>

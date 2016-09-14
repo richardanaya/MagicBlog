@@ -67,8 +67,12 @@ class PostContainer extends Component {
     }
 
     return (
-        <div>
-          {contents}
+        <div className="CenterHolder">
+          <div className="CenterHolder">
+            <div className="mdl-grid">
+              {contents}
+            </div>
+          </div>;
         </div>
     );
   }

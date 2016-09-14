@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 export default function(props){
-  return (<div>
+  return (<div className="mdl-cell mdl-cell--12-col">
     <div>Title: <input defaultValue={props.post.title} onChange={(e)=>props.onPostChange("title",e.target.value)}/></div>
     <div><textarea defaultValue={props.post.content} onChange={(e)=>props.onPostChange("content",e.target.value)}/></div>
     <div>

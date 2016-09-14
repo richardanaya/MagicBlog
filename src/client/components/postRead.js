@@ -6,7 +6,7 @@ import CommentEntryArea from './commentEntryArea'
 export default function(props){
   var date = new Date(props.post.datetime);
   var dateString = (date.getMonth()+1)+"/"+date.getDate()+"/"+date.getFullYear();
-  return (<div>
+  return (<div className="mdl-cell mdl-cell--12-col">
       <div>{props.post.title}</div>
       <div>{props.post.username}</div>
       <div>{dateString}</div>
