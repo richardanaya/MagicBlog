@@ -5,6 +5,9 @@ import * as actionCreators from '../actions'
 import PostRead from '../components/postRead'
 import PostEdit from '../components/postEdit'
 import {listenToPost} from '../firebase'
+import Comment from '../components/comment'
+import CommentEdit from '../components/commentEdit'
+import CommentEntryArea from '../components/commentEntryArea'
 
 class PostContainer extends Component {
   constructor (props) {
@@ -15,9 +18,33 @@ class PostContainer extends Component {
           username: props.app.name,
           datetime: (new Date).getTime(),
           content: "",
-          comments: []
-        }
+        },
+        comments: [],
+        newComment: ""
     }
+    this.onComment = this.onComment.bind(this);
+    this.onCommentChange = this.onCommentChange.bind(this);
+  }
+
+  onCommentChange(comment) {
+    this.setState({
+      ...this.state,
+      newComment: comment
+    })
+  }
+
+  onComment() {
+    var newComments = this.state.comments;
+    newComments.push({
+      name: "blah",
+      datetime: (new Date).getTime(),
+      comment:this.state.newComment
+    })
+    this.setState({
+      ...this.state,
+      comments:newComments,
+      newComment: ""
+    })
   }
 
   componentDidMount() {
@@ -35,13 +62,14 @@ class PostContainer extends Component {
   }
 
   render () {
-    var contents = (<PostRead post={this.state.post}/>);
-
+    var comments = this.state.comments.map(c=>(<Comment key={c.datetime} comment={c.comment} name={c.name} datetime={c.datetime}/>))
     return (
         <div className="CenterHolder">
           <div className="CenterHolder">
             <div className="mdl-grid">
-              {contents}
+              <PostRead post={this.state.post}/>
+              {comments}
+              <CommentEntryArea name={this.props.app.name} newComment={this.state.newComment} onComment={this.onComment} onCommentChange={this.onCommentChange}/>
             </div>
           </div>;
         </div>
