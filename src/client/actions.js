@@ -12,12 +12,14 @@ export function createPost(post){
     var uid = firebase.auth().currentUser.uid;
     var ref = firebase.database().ref("/posts/"+uid+"/").push();
     var name = getState().app.name;
-    ref.set({
+    var newPost = {
       datetime:post.datetime,
       username:name,
       title:post.title,
       content:post.content
-    }).then(function(a){
+    };
+    debugger;
+    ref.set(newPost).then(function(a){
         var timelineRef = firebase.database().ref("/timeline/").push();
         timelineRef.set({
           post_id:ref.key,
@@ -43,6 +45,20 @@ export function auth0Login(){
   return (dispatch)=>{
     browserHistory.push('/')
     lock.show();
+  }
+}
+
+export function auth0Logout(){
+  return (dispatch)=>{
+    localStorage.removeItem('id_token');
+    localStorage.removeItem('delegation_token');
+    localStorage.removeItem('profile');
+    firebase.auth().signOut().then(function() {
+      dispatch(logout())
+      browserHistory.push("/");
+    }, function(error) {
+      console.log(error);
+    });
   }
 }
 

@@ -22,16 +22,10 @@ export default function(state = {
                 loginToken:action.loginToken
             }
         case LOGOUT:
-            localStorage.removeItem('id_token');
-            localStorage.removeItem('delegation_token');
-            localStorage.removeItem('profile');
-            firebase.auth().signOut().then(function() {
-              console.log("Signout Successful")
-            }, function(error) {
-              console.log(error);
-            });
             return {
                 ...state,
+                name: "",
+                picture: "",
                 loginToken:null
             }
         case LOAD_PROFILE:

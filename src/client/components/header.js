@@ -6,7 +6,7 @@ import { Router, Route, Link } from 'react-router'
 
 function Header(props){
   var login =  (<a href="#" className="mdl-layout__tab" onClick={()=>props.actions.auth0Login()}>Login</a>);
-  var logout = (<a href="#" className="mdl-layout__tab" onClick={()=>props.actions.logout()}>Logout</a>);
+  var logout = (<a href="#" className="mdl-layout__tab" onClick={()=>props.actions.auth0Logout()}>Logout</a>);
   var authSection = props.app.loginToken===null?login:logout;
   var writeLink = props.app.loginToken===null?null:(<Link className="mdl-layout__tab" to={'/post'}>Write</Link>);
   var profile = props.app.loginToken===null?null:(<span className="ProfileUser mdl-layout__tab"><img src={props.app.picture}/>{props.app.name}</span>);

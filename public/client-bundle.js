@@ -21618,15 +21618,9 @@
 	                loginToken: action.loginToken
 	            });
 	        case _actions.LOGOUT:
-	            localStorage.removeItem('id_token');
-	            localStorage.removeItem('delegation_token');
-	            localStorage.removeItem('profile');
-	            firebase.auth().signOut().then(function () {
-	                console.log("Signout Successful");
-	            }, function (error) {
-	                console.log(error);
-	            });
 	            return _extends({}, state, {
+	                name: "",
+	                picture: "",
 	                loginToken: null
 	            });
 	        case _actions.LOAD_PROFILE:
@@ -21658,6 +21652,7 @@
 	exports.createPost = createPost;
 	exports.updateViewingPost = updateViewingPost;
 	exports.auth0Login = auth0Login;
+	exports.auth0Logout = auth0Logout;
 	exports.login = login;
 	exports.logout = logout;
 	exports.loadProfile = loadProfile;
@@ -21679,12 +21674,14 @@
 	    var uid = firebase.auth().currentUser.uid;
 	    var ref = firebase.database().ref("/posts/" + uid + "/").push();
 	    var name = getState().app.name;
-	    ref.set({
+	    var newPost = {
 	      datetime: post.datetime,
 	      username: name,
 	      title: post.title,
 	      content: post.content
-	    }).then(function (a) {
+	    };
+	    debugger;
+	    ref.set(newPost).then(function (a) {
 	      var timelineRef = firebase.database().ref("/timeline/").push();
 	      timelineRef.set({
 	        post_id: ref.key,
@@ -21710,6 +21707,20 @@
 	  return function (dispatch) {
 	    _reactRouter.browserHistory.push('/');
 	    _auth.lock.show();
+	  };
+	}
+	
+	function auth0Logout() {
+	  return function (dispatch) {
+	    localStorage.removeItem('id_token');
+	    localStorage.removeItem('delegation_token');
+	    localStorage.removeItem('profile');
+	    firebase.auth().signOut().then(function () {
+	      dispatch(logout());
+	      _reactRouter.browserHistory.push("/");
+	    }, function (error) {
+	      console.log(error);
+	    });
 	  };
 	}
 	
@@ -29379,7 +29390,7 @@
 	  var logout = _react2.default.createElement(
 	    'a',
 	    { href: '#', className: 'mdl-layout__tab', onClick: function onClick() {
-	        return props.actions.logout();
+	        return props.actions.auth0Logout();
 	      } },
 	    'Logout'
 	  );
