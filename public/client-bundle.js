@@ -29257,7 +29257,7 @@
 /* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -29265,9 +29265,15 @@
 	
 	exports.default = function (props) {
 	  return _react2.default.createElement(
-	    'div',
+	    "div",
 	    null,
-	    'Footer'
+	    "View sourcecode ",
+	    _react2.default.createElement(
+	      "a",
+	      { href: "github.com/richardanaya/magicblog" },
+	      "here"
+	    ),
+	    "."
 	  );
 	};
 	
