@@ -29217,45 +29217,61 @@
 	function Header(props) {
 	  var login = _react2.default.createElement(
 	    'a',
-	    { href: '#', onClick: function onClick() {
+	    { href: '#', className: 'mdl-layout__tab', onClick: function onClick() {
 	        return props.actions.auth0Login();
 	      } },
 	    'Login'
 	  );
 	  var logout = _react2.default.createElement(
 	    'a',
-	    { href: '#', onClick: function onClick() {
+	    { href: '#', className: 'mdl-layout__tab', onClick: function onClick() {
 	        return props.actions.logout();
 	      } },
 	    'Logout'
 	  );
 	  var authSection = props.app.loginToken === null ? login : logout;
+	  var profile = props.app.loginToken === null ? null : _react2.default.createElement(
+	    'a',
+	    { href: '#', className: 'mdl-layout__tab' },
+	    props.app.name
+	  );
 	  return _react2.default.createElement(
 	    'div',
 	    null,
 	    _react2.default.createElement(
-	      'h1',
-	      null,
-	      'Magic Blog'
-	    ),
-	    _react2.default.createElement(
-	      'div',
-	      null,
+	      'header',
+	      { className: 'mdl-layout__header mdl-layout__header--scroll mdl-color--primary' },
+	      _react2.default.createElement('div', { className: ' mdl-layout__header-row' }),
 	      _react2.default.createElement(
-	        _reactRouter.Link,
-	        { to: '/' },
-	        'Home'
+	        'div',
+	        { className: ' mdl-layout__header-row', style: { paddingLeft: 0, paddingRight: 0 } },
+	        _react2.default.createElement(
+	          'h3',
+	          null,
+	          'Magic Blog'
+	        )
 	      ),
-	      ' ',
+	      _react2.default.createElement('div', { className: ' mdl-layout__header-row' }),
 	      _react2.default.createElement(
-	        _reactRouter.Link,
-	        { to: '/post' },
-	        'Create'
-	      ),
-	      ' ',
-	      authSection,
-	      ' ',
-	      props.app.name
+	        'div',
+	        { className: 'mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark', style: { paddingLeft: 0, paddingRight: 0 } },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'LinkHolder' },
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { className: 'mdl-layout__tab', to: '/' },
+	            'Home'
+	          ),
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { className: 'mdl-layout__tab', to: '/post' },
+	            'Write'
+	          ),
+	          authSection,
+	          profile
+	        )
+	      )
 	    )
 	  );
 	}
@@ -29282,13 +29298,11 @@
 	  return _react2.default.createElement(
 	    "div",
 	    null,
-	    "View sourcecode ",
 	    _react2.default.createElement(
 	      "a",
-	      { href: "github.com/richardanaya/magicblog" },
-	      "here"
-	    ),
-	    "."
+	      { className: "ViewSourceButton mdl-button mdl-button--raised mdl-js-ripple-effect mdl-color--accent", href: "github.com/richardanaya/magicblog" },
+	      "View Source"
+	    )
 	  );
 	};
 	
@@ -29369,12 +29383,16 @@
 	      var timeline = [];
 	
 	      for (var i in this.state.timeline) {
-	        timeline.push(_react2.default.createElement(_postSummarized2.default, { key: this.state.timeline[i].post_id, timelinePost: this.state.timeline[i] }));
+	        timeline.push(_react2.default.createElement(
+	          'div',
+	          { className: 'mdl-cell mdl-cell--6-col', key: this.state.timeline[i].post_id },
+	          _react2.default.createElement(_postSummarized2.default, { timelinePost: this.state.timeline[i] })
+	        ));
 	      }
 	
 	      return _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'mdl-grid' },
 	        timeline
 	      );
 	    }
@@ -29413,16 +29431,29 @@
 	
 	    return _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'PostSummary' },
 	        _react2.default.createElement(
-	            _reactRouter.Link,
-	            { to: '/post/' + uid + "/" + post_id },
-	            title
+	            'div',
+	            { className: 'PostSummary-title' },
+	            _react2.default.createElement(
+	                _reactRouter.Link,
+	                { to: '/post/' + uid + "/" + post_id },
+	                title
+	            )
 	        ),
-	        ' by ',
-	        username,
-	        datetime,
-	        summary
+	        _react2.default.createElement(
+	            'div',
+	            { className: 'PostSummary-subtitle' },
+	            'Posty by ',
+	            username,
+	            ' on ',
+	            datetime
+	        ),
+	        _react2.default.createElement(
+	            'div',
+	            { className: 'PostSummary-summary' },
+	            summary
+	        )
 	    );
 	};
 	
@@ -29851,7 +29882,7 @@
 	
 	
 	// module
-	exports.push([module.id, "", ""]);
+	exports.push([module.id, "/**\n * Copyright 2015 Google Inc. All Rights Reserved.\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *      http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\nhtml,\nbody {\n  font-family: 'Roboto', 'Helvetica', sans-serif;\n  margin: 0;\n  padding: 0;\n}\n.mdl-demo .mdl-layout__header-row {\n  padding-left: 40px;\n}\n.mdl-demo .mdl-layout__tab-bar-button {\n  display: none;\n}\n.mdl-demo .mdl-layout.is-small-screen .mdl-layout__tab-bar .mdl-button {\n  display: none;\n}\n.mdl-demo .mdl-layout:not(.is-small-screen) .mdl-layout__tab-bar,\n.mdl-demo .mdl-layout:not(.is-small-screen) .mdl-layout__tab-bar-container {\n  overflow: visible;\n}\n.mdl-demo .mdl-layout__tab-bar-container {\n  height: 64px;\n}\n.mdl-demo .mdl-layout__tab-bar {\n  padding: 0;\n  padding-left: 16px;\n  box-sizing: border-box;\n  height: 100%;\n  width: 100%;\n}\n.mdl-demo .mdl-layout__tab-bar .mdl-layout__tab {\n  height: 64px;\n  line-height: 64px;\n}\n.mdl-demo .mdl-layout__tab-bar .mdl-layout__tab.is-active::after {\n  background-color: white;\n  height: 4px;\n}\n.mdl-demo main > .mdl-layout__tab-panel {\n  padding: 8px;\n  padding-top: 48px;\n}\n.mdl-demo .mdl-card {\n  height: auto;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n}\n.mdl-demo .mdl-card > * {\n  height: auto;\n}\n.mdl-demo .mdl-card .mdl-card__supporting-text {\n  margin: 40px;\n  -webkit-flex-grow: 1;\n  -ms-flex-positive: 1;\n  flex-grow: 1;\n  padding: 0;\n  color: inherit;\n}\n.mdl-demo.mdl-demo .mdl-card__supporting-text h4 {\n  margin-top: 0;\n  margin-bottom: 20px;\n}\n.mdl-demo .mdl-card__actions {\n  margin: 0;\n  padding: 4px 40px;\n  color: inherit;\n}\n.mdl-demo .mdl-card__actions a {\n  color: #00BCD4;\n  margin: 0;\n}\n.mdl-demo .mdl-card__actions a:hover,\n.mdl-demo .mdl-card__actions a:active {\n  color: inherit;\n  background-color: transparent;\n}\n.mdl-demo .mdl-card__supporting-text + .mdl-card__actions {\n  border-top: 1px solid rgba(0, 0, 0, 0.12);\n}\n.mdl-demo #add {\n  position: absolute;\n  right: 40px;\n  top: 36px;\n  z-index: 999;\n}\n.mdl-demo .mdl-layout__content section:not(:last-of-type) {\n  position: relative;\n  margin-bottom: 48px;\n}\n.mdl-demo section > header {\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n}\n.mdl-demo section > .section__play-btn {\n  min-height: 200px;\n}\n.mdl-demo section > header > .material-icons {\n  font-size: 3rem;\n}\n.mdl-demo section > button {\n  position: absolute;\n  z-index: 99;\n  top: 8px;\n  right: 8px;\n}\n.mdl-demo section .section__circle {\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-justify-content: flex-start;\n  -ms-flex-pack: start;\n  justify-content: flex-start;\n  -webkit-flex-grow: 0;\n  -ms-flex-positive: 0;\n  flex-grow: 0;\n  -webkit-flex-shrink: 1;\n  -ms-flex-negative: 1;\n  flex-shrink: 1;\n}\n.mdl-demo section .section__text {\n  -webkit-flex-grow: 1;\n  -ms-flex-positive: 1;\n  flex-grow: 1;\n  -webkit-flex-shrink: 0;\n  -ms-flex-negative: 0;\n  flex-shrink: 0;\n  padding-top: 8px;\n}\n.mdl-demo section .section__text h5 {\n  font-size: inherit;\n  margin: 0;\n  margin-bottom: 0.5em;\n}\n.mdl-demo section .section__text a {\n  text-decoration: none;\n}\n.mdl-demo section .section__circle-container > .section__circle-container__circle {\n  width: 64px;\n  height: 64px;\n  border-radius: 32px;\n  margin: 8px 0;\n}\n.mdl-demo section.section--footer .section__circle--big {\n  width: 100px;\n  height: 100px;\n  border-radius: 50px;\n  margin: 8px 32px;\n}\n.mdl-demo .is-small-screen section.section--footer .section__circle--big {\n  width: 50px;\n  height: 50px;\n  border-radius: 25px;\n  margin: 8px 16px;\n}\n.mdl-demo section.section--footer {\n  padding: 64px 0;\n  margin: 0 -8px -8px -8px;\n}\n.mdl-demo section.section--center .section__text:not(:last-child) {\n  border-bottom: 1px solid rgba(0, 0, 0, 0.13);\n}\n.mdl-demo .mdl-card .mdl-card__supporting-text > h3:first-child {\n  margin-bottom: 24px;\n}\n.mdl-demo .mdl-layout__tab-panel:not(#overview) {\n  background-color: white;\n}\n.mdl-demo #features section {\n  margin-bottom: 72px;\n}\n.mdl-demo #features h4,\n#features h5 {\n  margin-bottom: 16px;\n}\n.mdl-demo .toc {\n  border-left: 4px solid #C1EEF4;\n  margin: 24px;\n  padding: 0;\n  padding-left: 8px;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n}\n.mdl-demo .toc h4 {\n  font-size: 0.9rem;\n  margin-top: 0;\n}\n.mdl-demo .toc a {\n  color: #4DD0E1;\n  text-decoration: none;\n  font-size: 16px;\n  line-height: 28px;\n  display: block;\n}\n.mdl-demo .mdl-menu__container {\n  z-index: 99;\n}\n.mdl-layout__header h3 {\n  text-align: center;\n  width: 100%;\n  font-weight: 200;\n}\n@media screen and (max-width: 1024px) {\n  .mdl-layout__header {\n    display: block;\n  }\n  .mdl-layout__header h3 {\n    font-size: 30px;\n  }\n}\n@media (max-width: 839px) and (min-width: 480px) {\n  .mdl-grid--no-spacing > .mdl-cell--6-col,\n  .mdl-grid--no-spacing > .mdl-cell--6-col-tablet.mdl-cell--6-col-tablet {\n    width: 100%;\n  }\n}\n.mdl-layout__tab-bar {\n  width: 100%;\n  height: 50px;\n  text-align: center;\n}\n.ViewSourceButton {\n  position: absolute;\n  right: 10px;\n  bottom: 10px;\n  color: white;\n}\n.LinkHolder {\n  width: 100%;\n  text-align: center;\n}\n.LinkHolder .mdl-layout__tab {\n  display: inline-block;\n  float: none;\n}\n", ""]);
 	
 	// exports
 

@@ -28,11 +28,11 @@ class IndexContainer extends Component {
     var timeline = [];
 
     for(var i in this.state.timeline){
-      timeline.push(<PostSummarized key={this.state.timeline[i].post_id} timelinePost={this.state.timeline[i]}></PostSummarized>)
+      timeline.push(<div className="mdl-cell mdl-cell--6-col" key={this.state.timeline[i].post_id}><PostSummarized timelinePost={this.state.timeline[i]}></PostSummarized></div>)
     }
 
     return (
-        <div>
+        <div className="mdl-grid">
           {timeline}
         </div>
     );
