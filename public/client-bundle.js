@@ -29234,20 +29234,29 @@
 	    'div',
 	    null,
 	    _react2.default.createElement(
-	      _reactRouter.Link,
-	      { to: '/' },
-	      'Home'
+	      'h1',
+	      null,
+	      'Magic Blog'
 	    ),
-	    ' ',
 	    _react2.default.createElement(
-	      _reactRouter.Link,
-	      { to: '/post' },
-	      'Create'
-	    ),
-	    ' ',
-	    authSection,
-	    ' ',
-	    props.app.name
+	      'div',
+	      null,
+	      _react2.default.createElement(
+	        _reactRouter.Link,
+	        { to: '/' },
+	        'Home'
+	      ),
+	      ' ',
+	      _react2.default.createElement(
+	        _reactRouter.Link,
+	        { to: '/post' },
+	        'Create'
+	      ),
+	      ' ',
+	      authSection,
+	      ' ',
+	      props.app.name
+	    )
 	  );
 	}
 	

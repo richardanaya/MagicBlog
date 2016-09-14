@@ -8,7 +8,10 @@ function Header(props){
   var login =  (<a href="#" onClick={()=>props.actions.auth0Login()}>Login</a>);
   var logout = (<a href="#" onClick={()=>props.actions.logout()}>Logout</a>);
   var authSection = props.app.loginToken===null?login:logout;
-  return (<div><Link to={'/'}>Home</Link> <Link to={'/post'}>Create</Link> {authSection} {props.app.name}</div>)
+  return (<div>
+    <h1>Magic Blog</h1>
+    <div><Link to={'/'}>Home</Link> <Link to={'/post'}>Create</Link> {authSection} {props.app.name}</div>
+    </div>)
 }
 
 Header = connect(
