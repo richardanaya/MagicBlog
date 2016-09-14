@@ -9,6 +9,10 @@ import {listenToPost} from '../firebase'
 class PostContainer extends Component {
   constructor (props) {
     super(props);
+    this.onPostCreate = this.onPostCreate.bind(this);
+    this.onPostDelete = this.onPostDelete.bind(this);
+    this.onPostSave = this.onPostSave.bind(this);
+    this.onPostChange = this.onPostChange.bind(this);
     this.state = {
         post: {
           title: "",
@@ -20,22 +24,39 @@ class PostContainer extends Component {
     }
   }
 
+  onPostCreate(){
+      this.props.actions.createPost(this.state.post);
+  }
+
+  onPostDelete(){
+
+  }
+
+  onPostSave(){
+
+  }
+
+  onPostChange(prop,val){
+      var newState = this.state;
+      newState.post[prop] = val;
+      this.setState(newState);
+  }
+
   componentDidMount() {
-    //get latest story
-    var ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID);
-    ref.on("value",(snapshot)=>{
-      var latestPost = snapshot.val();
-      this.setState(
-        {
-          ...this.state,
-          post:latestPost
+    //reset if we are writing
+    this.setState({
+        post: {
+          title: "",
+          username: this.props.app.name,
+          datetime: (new Date).getTime(),
+          content: "",
+          comments: []
         }
-      )
-    })
+    });
   }
 
   render () {
-    var contents = (<PostRead post={this.state.post}/>);
+    var contents = (<PostEdit post={this.state.post} onPostCreate={this.onPostCreate} onPostChange={this.onPostChange}/>);
 
     return (
         <div className="CenterHolder">

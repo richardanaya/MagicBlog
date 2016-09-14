@@ -74,6 +74,10 @@
 	
 	var _post2 = _interopRequireDefault(_post);
 	
+	var _postEdit = __webpack_require__(283);
+	
+	var _postEdit2 = _interopRequireDefault(_postEdit);
+	
 	__webpack_require__(276);
 	
 	var _actions = __webpack_require__(263);
@@ -99,7 +103,7 @@
 	      _reactRouter.Route,
 	      { path: '/', component: _app2.default },
 	      _react2.default.createElement(_reactRouter.IndexRoute, { component: _index2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'post', component: _post2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: 'post', component: _postEdit2.default }),
 	      _react2.default.createElement(_reactRouter.Route, { path: 'post/:userID/:postID', component: _post2.default })
 	    )
 	  )
@@ -29529,10 +29533,6 @@
 	
 	    var _this = _possibleConstructorReturn(this, (PostContainer.__proto__ || Object.getPrototypeOf(PostContainer)).call(this, props));
 	
-	    _this.onPostCreate = _this.onPostCreate.bind(_this);
-	    _this.onPostDelete = _this.onPostDelete.bind(_this);
-	    _this.onPostSave = _this.onPostSave.bind(_this);
-	    _this.onPostChange = _this.onPostChange.bind(_this);
 	    _this.state = {
 	      post: {
 	        title: "",
@@ -29546,47 +29546,23 @@
 	  }
 	
 	  _createClass(PostContainer, [{
-	    key: 'onPostCreate',
-	    value: function onPostCreate() {
-	      this.props.actions.createPost(this.state.post);
-	    }
-	  }, {
-	    key: 'onPostDelete',
-	    value: function onPostDelete() {}
-	  }, {
-	    key: 'onPostSave',
-	    value: function onPostSave() {}
-	  }, {
-	    key: 'onPostChange',
-	    value: function onPostChange(prop, val) {
-	      var newState = this.state;
-	      newState.post[prop] = val;
-	      this.setState(newState);
-	    }
-	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      var _this2 = this;
 	
-	      if (this.props.params.postID) {
-	        var ref = firebase.database().ref("/posts/" + this.props.params.userID + "/" + this.props.params.postID);
-	        ref.on("value", function (snapshot) {
-	          var latestPost = snapshot.val();
-	          _this2.setState(_extends({}, _this2.state, {
-	            post: latestPost
-	          }));
-	        });
-	      }
+	      //get latest story
+	      var ref = firebase.database().ref("/posts/" + this.props.params.userID + "/" + this.props.params.postID);
+	      ref.on("value", function (snapshot) {
+	        var latestPost = snapshot.val();
+	        _this2.setState(_extends({}, _this2.state, {
+	          post: latestPost
+	        }));
+	      });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var contents = null;
-	      if (this.props.params.postID) {
-	        contents = _react2.default.createElement(_postRead2.default, { post: this.state.post });
-	      } else {
-	        contents = _react2.default.createElement(_postEdit2.default, { post: this.state.post, onPostCreate: this.onPostCreate, onPostChange: this.onPostChange });
-	      }
+	      var contents = _react2.default.createElement(_postRead2.default, { post: this.state.post });
 	
 	      return _react2.default.createElement(
 	        'div',
@@ -29773,7 +29749,7 @@
 	          } }),
 	        _react2.default.createElement(
 	          "label",
-	          { className: "mdl-textfield__label", htmlFor: "sample1" },
+	          { className: "mdl-textfield__label", htmlFor: "sample1", style: { display: props.post.title.length > 0 ? "none" : "auto" } },
 	          "Title..."
 	        )
 	      ),
@@ -29786,7 +29762,7 @@
 	          } }),
 	        _react2.default.createElement(
 	          "label",
-	          { className: "mdl-textfield__label", htmlFor: "sample5" },
+	          { className: "mdl-textfield__label", htmlFor: "sample5", style: { display: props.post.content.length > 0 ? "none" : "auto" } },
 	          "My article starts here..."
 	        )
 	      ),
@@ -30309,6 +30285,141 @@
 	  storageBucket: "magicblog-bcd26.appspot.com"
 	};
 	firebase.initializeApp(config);
+
+/***/ },
+/* 283 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(187);
+	
+	var _redux = __webpack_require__(172);
+	
+	var _actions = __webpack_require__(263);
+	
+	var actionCreators = _interopRequireWildcard(_actions);
+	
+	var _postRead = __webpack_require__(270);
+	
+	var _postRead2 = _interopRequireDefault(_postRead);
+	
+	var _postEdit = __webpack_require__(274);
+	
+	var _postEdit2 = _interopRequireDefault(_postEdit);
+	
+	var _firebase = __webpack_require__(282);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var PostContainer = function (_Component) {
+	  _inherits(PostContainer, _Component);
+	
+	  function PostContainer(props) {
+	    _classCallCheck(this, PostContainer);
+	
+	    var _this = _possibleConstructorReturn(this, (PostContainer.__proto__ || Object.getPrototypeOf(PostContainer)).call(this, props));
+	
+	    _this.onPostCreate = _this.onPostCreate.bind(_this);
+	    _this.onPostDelete = _this.onPostDelete.bind(_this);
+	    _this.onPostSave = _this.onPostSave.bind(_this);
+	    _this.onPostChange = _this.onPostChange.bind(_this);
+	    _this.state = {
+	      post: {
+	        title: "",
+	        username: props.app.name,
+	        datetime: new Date().getTime(),
+	        content: "",
+	        comments: []
+	      }
+	    };
+	    return _this;
+	  }
+	
+	  _createClass(PostContainer, [{
+	    key: 'onPostCreate',
+	    value: function onPostCreate() {
+	      this.props.actions.createPost(this.state.post);
+	    }
+	  }, {
+	    key: 'onPostDelete',
+	    value: function onPostDelete() {}
+	  }, {
+	    key: 'onPostSave',
+	    value: function onPostSave() {}
+	  }, {
+	    key: 'onPostChange',
+	    value: function onPostChange(prop, val) {
+	      var newState = this.state;
+	      newState.post[prop] = val;
+	      this.setState(newState);
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      //reset if we are writing
+	      this.setState({
+	        post: {
+	          title: "",
+	          username: this.props.app.name,
+	          datetime: new Date().getTime(),
+	          content: "",
+	          comments: []
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var contents = _react2.default.createElement(_postEdit2.default, { post: this.state.post, onPostCreate: this.onPostCreate, onPostChange: this.onPostChange });
+	
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'CenterHolder' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'CenterHolder' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'mdl-grid' },
+	            contents
+	          )
+	        ),
+	        ';'
+	      );
+	    }
+	  }]);
+	
+	  return PostContainer;
+	}(_react.Component);
+	
+	PostContainer = (0, _reactRedux.connect)(function (state) {
+	  return function () {
+	    return { app: state.app };
+	  };
+	}, function (dispatch) {
+	  return { actions: (0, _redux.bindActionCreators)(actionCreators, dispatch) };
+	})(PostContainer);
+	
+	exports.default = PostContainer;
 
 /***/ }
 /******/ ]);
