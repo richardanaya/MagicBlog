@@ -8,7 +8,8 @@ function Header(props){
   var login =  (<a href="#" className="mdl-layout__tab" onClick={()=>props.actions.auth0Login()}>Login</a>);
   var logout = (<a href="#" className="mdl-layout__tab" onClick={()=>props.actions.logout()}>Logout</a>);
   var authSection = props.app.loginToken===null?login:logout;
-  var profile = props.app.loginToken===null?null:(<a href="#" className="mdl-layout__tab">{props.app.name}</a>);
+  var writeLink = props.app.loginToken===null?null:(<Link className="mdl-layout__tab" to={'/post'}>Write</Link>);
+  var profile = props.app.loginToken===null?null:(<span className="ProfileUser mdl-layout__tab"><img src={props.app.picture}/>{props.app.name}</span>);
   return (
     <div>
     <header className="mdl-layout__header mdl-layout__header--scroll mdl-color--primary">
@@ -22,7 +23,7 @@ function Header(props){
       <div className="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark" style={{paddingLeft:0,paddingRight:0}}>
         <div className="LinkHolder">
           <Link className="mdl-layout__tab" to={'/'}>Home</Link>
-          <Link className="mdl-layout__tab" to={'/post'}>Write</Link>
+          {writeLink}
           {authSection}
           {profile}
         </div>

@@ -69,13 +69,16 @@ class PostContainer extends Component {
 
   render () {
     var comments = this.state.comments.map(c=>(<Comment key={c.datetime} comment={c.comment} name={c.name} datetime={c.datetime}/>))
+
+    var commentsEntry = (this.props.app.loginToken==null)?null:(<CommentEntryArea name={this.props.app.name} newComment={this.state.newComment} onComment={this.onComment} onCommentChange={this.onCommentChange}/>);
+
     return (
         <div className="CenterHolder">
           <div className="CenterHolder">
             <div className="mdl-grid">
               <PostRead post={this.state.post}/>
               {comments}
-              <CommentEntryArea name={this.props.app.name} newComment={this.state.newComment} onComment={this.onComment} onCommentChange={this.onCommentChange}/>
+              {commentsEntry}
             </div>
           </div>;
         </div>
