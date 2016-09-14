@@ -9,7 +9,9 @@ function AppContainer(props){
   return (
     <div>
         <Header/>
+        <main className="mdl-layout__content">
         {props.children}
+        </main>
         <Footer/>
     </div>
   )
