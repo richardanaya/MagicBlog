@@ -29113,16 +29113,22 @@
 	var UPDATE_VIEWING_POST = exports.UPDATE_VIEWING_POST = "UPDATE_VIEWING_POST";
 	var LOAD_PROFILE = exports.LOAD_PROFILE = "LOAD_PROFILE";
 	function createPost(post) {
-	  return function (dispatch) {
+	  return function (dispatch, getState) {
 	    var uid = firebase.auth().currentUser.uid;
 	    var ref = firebase.database().ref("/posts/" + uid + "/").push();
-	    ref.set(post).then(function (a) {
+	    var name = getState().app.name;
+	    ref.set({
+	      datetime: post.datetime,
+	      username: name,
+	      title: post.title,
+	      content: post.content
+	    }).then(function (a) {
 	      var timelineRef = firebase.database().ref("/timeline/").push();
 	      timelineRef.set({
 	        post_id: ref.key,
 	        datetime: post.datetime,
 	        uid: uid,
-	        username: post.username,
+	        username: name,
 	        title: post.title,
 	        summary: post.content.substring(0, 120)
 	      });
@@ -29480,9 +29486,10 @@
 	    _this.state = {
 	      post: {
 	        title: "",
-	        username: "",
+	        username: props.app.name,
 	        datetime: new Date().getTime(),
-	        content: ""
+	        content: "",
+	        comments: []
 	      }
 	    };
 	    return _this;
@@ -29695,9 +29702,6 @@
 	});
 	
 	exports.default = function (props) {
-	  var timestamp = 1301090400;
-	  var date = new Date(props.post.datetime);
-	  var dateString = date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear();
 	  return _react2.default.createElement(
 	    "div",
 	    null,
@@ -29708,20 +29712,6 @@
 	      _react2.default.createElement("input", { defaultValue: props.post.title, onChange: function onChange(e) {
 	          return props.onPostChange("title", e.target.value);
 	        } })
-	    ),
-	    _react2.default.createElement(
-	      "div",
-	      null,
-	      "Author: ",
-	      _react2.default.createElement("input", { defaultValue: props.post.username, onChange: function onChange(e) {
-	          return props.onPostChange("username", e.target.value);
-	        } })
-	    ),
-	    _react2.default.createElement(
-	      "div",
-	      null,
-	      "Date: ",
-	      dateString
 	    ),
 	    _react2.default.createElement(
 	      "div",

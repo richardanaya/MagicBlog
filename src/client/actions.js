@@ -7,16 +7,22 @@ import { push } from 'react-router-redux';
 import {listenToPost} from './firebase'
 
 export function createPost(post){
-  return (dispatch)=>{
+  return (dispatch,getState)=>{
     var uid = firebase.auth().currentUser.uid;
     var ref = firebase.database().ref("/posts/"+uid+"/").push();
-    ref.set(post).then(function(a){
+    var name = getState().app.name;
+    ref.set({
+      datetime:post.datetime,
+      username:name,
+      title:post.title,
+      content:post.content
+    }).then(function(a){
         var timelineRef = firebase.database().ref("/timeline/").push();
         timelineRef.set({
           post_id:ref.key,
           datetime:post.datetime,
           uid:uid,
-          username:post.username,
+          username:name,
           title:post.title,
           summary:post.content.substring(0,120)
         })

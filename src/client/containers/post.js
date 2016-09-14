@@ -16,9 +16,10 @@ class PostContainer extends Component {
     this.state = {
         post: {
           title: "",
-          username: "",
+          username: props.app.name,
           datetime: (new Date).getTime(),
-          content: ""
+          content: "",
+          comments: []
         }
     }
   }
