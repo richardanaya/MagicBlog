@@ -34,16 +34,17 @@ class PostContainer extends Component {
   }
 
   onComment() {
-    var newComments = this.state.comments;
-    newComments.push({
+    var ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID+"/comments").push();
+
+    ref.set({
       name: "blah",
       datetime: (new Date).getTime(),
       comment:this.state.newComment
-    })
-    this.setState({
-      ...this.state,
-      comments:newComments,
-      newComment: ""
+    }).then(()=>{
+      this.setState({
+        ...this.state,
+        newComment: ""
+      })
     })
   }
 
@@ -52,10 +53,15 @@ class PostContainer extends Component {
     var ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID);
     ref.on("value",(snapshot)=>{
       var latestPost = snapshot.val();
+      var comments = [];
+      for(var i in latestPost.comments){
+        comments.push(latestPost.comments[i]);
+      }
       this.setState(
         {
           ...this.state,
-          post:latestPost
+          post:latestPost,
+          comments: comments
         }
       )
     })
