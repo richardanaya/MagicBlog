@@ -24,7 +24,7 @@ ReactDOM.render(
         <Route path="/" component={AppContainer}>
           <IndexRoute component={IndexContainer}/>
           <Route path="post" component={PostContainer}/>
-          <Route path="post/:postID" component={PostContainer}/>
+          <Route path="post/:userID/:postID" component={PostContainer}/>
         </Route>
       </Router>
     </Provider>,

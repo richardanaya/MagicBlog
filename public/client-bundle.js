@@ -100,7 +100,7 @@
 	      { path: '/', component: _app2.default },
 	      _react2.default.createElement(_reactRouter.IndexRoute, { component: _index2.default }),
 	      _react2.default.createElement(_reactRouter.Route, { path: 'post', component: _post2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'post/:postID', component: _post2.default })
+	      _react2.default.createElement(_reactRouter.Route, { path: 'post/:userID/:postID', component: _post2.default })
 	    )
 	  )
 	), document.getElementById('app'));
@@ -29139,9 +29139,12 @@
 	var LOAD_PROFILE = exports.LOAD_PROFILE = "LOAD_PROFILE";
 	function createPost(post) {
 	  return function (dispatch) {
-	    var ref = firebase.database().ref("/posts/" + firebase.auth().currentUser.uid + "/").push();
+	    var uid = firebase.auth().currentUser.uid;
+	    var ref = firebase.database().ref("/posts/" + uid + "/").push();
 	    ref.set(post).then(function (a) {
-	      dispatch((0, _reactRouterRedux.push)('/post/' + ref.key));
+	      var timelineRef = firebase.database().ref("/timeline/").push();
+	      timelineRef.set({ post_id: ref.key, datetime: post.datetime, uid: uid });
+	      dispatch((0, _reactRouterRedux.push)('/post/' + uid + "/" + ref.key));
 	    });
 	  };
 	}
@@ -29209,7 +29212,12 @@
 	  return _react2.default.createElement(
 	    'div',
 	    null,
-	    'Header ',
+	    _react2.default.createElement(
+	      _reactRouter.Link,
+	      { to: '/' },
+	      'Home'
+	    ),
+	    ' ',
 	    _react2.default.createElement(
 	      _reactRouter.Link,
 	      { to: '/post' },
@@ -29294,17 +29302,40 @@
 	  function IndexContainer(props) {
 	    _classCallCheck(this, IndexContainer);
 	
-	    return _possibleConstructorReturn(this, (IndexContainer.__proto__ || Object.getPrototypeOf(IndexContainer)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (IndexContainer.__proto__ || Object.getPrototypeOf(IndexContainer)).call(this, props));
+	
+	    _this.state = {
+	      timeline: []
+	    };
 	    //this.handleOnFilterChange = this.handleOnFilterChange.bind(this);
+	    return _this;
 	  }
 	
 	  _createClass(IndexContainer, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+	
+	      var ref = firebase.database().ref("/timeline");
+	      ref.on("value", function (snapshot) {
+	        _this2.setState({
+	          timeline: snapshot.val()
+	        });
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var timeline = [];
+	
+	      for (var i in this.state.timeline) {
+	        timeline.push(_react2.default.createElement(_postSummarized2.default, { key: this.state.timeline[i].post_id, timelinePost: this.state.timeline[i] }));
+	      }
+	
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(_postSummarized2.default, null)
+	        timeline
 	      );
 	    }
 	  }]);
@@ -29334,14 +29365,21 @@
 	  return _react2.default.createElement(
 	    'div',
 	    null,
-	    'Post summary'
+	    'Post summary ',
+	    _react2.default.createElement(
+	      _reactRouter.Link,
+	      { to: '/post/' + props.timelinePost.uid + "/" + props.timelinePost.post_id },
+	      'Link'
+	    )
 	  );
 	};
 	
 	var _react = __webpack_require__(1);
 	
 	var _react2 = _interopRequireDefault(_react);
-
+	
+	var _reactRouter = __webpack_require__(196);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
@@ -29437,7 +29475,7 @@
 	      var _this2 = this;
 	
 	      if (this.props.params.postID) {
-	        var ref = firebase.database().ref("/posts/google-oauth2|113101168187756225718/" + this.props.params.postID);
+	        var ref = firebase.database().ref("/posts/" + this.props.params.userID + "/" + this.props.params.postID);
 	        ref.on("value", function (snapshot) {
 	          var latestPost = snapshot.val();
 	          _this2.setState(_extends({}, _this2.state, {

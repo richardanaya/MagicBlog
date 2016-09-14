@@ -7,13 +7,33 @@ import PostSummarized from '../components/postSummarized'
 class IndexContainer extends Component {
   constructor (props) {
     super(props);
+    this.state = {
+      timeline:[]
+    }
     //this.handleOnFilterChange = this.handleOnFilterChange.bind(this);
   }
 
+  componentDidMount() {
+    var ref = firebase.database().ref("/timeline");
+    ref.on("value",(snapshot)=>{
+      this.setState(
+        {
+          timeline:snapshot.val()
+        }
+      )
+    })
+  }
+
   render () {
+    var timeline = [];
+
+    for(var i in this.state.timeline){
+      timeline.push(<PostSummarized key={this.state.timeline[i].post_id} timelinePost={this.state.timeline[i]}></PostSummarized>)
+    }
+
     return (
         <div>
-          <PostSummarized></PostSummarized>
+          {timeline}
         </div>
     );
   }

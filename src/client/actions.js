@@ -8,9 +8,12 @@ import {listenToPost} from './firebase'
 
 export function createPost(post){
   return (dispatch)=>{
-    var ref = firebase.database().ref("/posts/"+firebase.auth().currentUser.uid+"/").push();
+    var uid = firebase.auth().currentUser.uid;
+    var ref = firebase.database().ref("/posts/"+uid+"/").push();
     ref.set(post).then(function(a){
-        dispatch(push('/post/'+ref.key))
+        var timelineRef = firebase.database().ref("/timeline/").push();
+        timelineRef.set({post_id:ref.key,datetime:post.datetime,uid:uid})
+        dispatch(push('/post/'+uid+"/"+ref.key))
     })
   }
 }

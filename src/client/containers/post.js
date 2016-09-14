@@ -43,7 +43,7 @@ class PostContainer extends Component {
 
   componentDidMount() {
     if(this.props.params.postID){
-      var ref = firebase.database().ref("/posts/google-oauth2|113101168187756225718/"+this.props.params.postID);
+      var ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID);
       ref.on("value",(snapshot)=>{
         var latestPost = snapshot.val();
         this.setState(
