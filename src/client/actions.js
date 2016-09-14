@@ -5,6 +5,7 @@ export const LOAD_PROFILE = "LOAD_PROFILE";
 import {lock} from "./auth0"
 import { push } from 'react-router-redux';
 import {listenToPost} from './firebase'
+import { browserHistory } from 'react-router'
 
 export function createPost(post){
   return (dispatch,getState)=>{
@@ -40,6 +41,7 @@ export function updateViewingPost(post){
 
 export function auth0Login(){
   return (dispatch)=>{
+    browserHistory.push('/')
     lock.show();
   }
 }

@@ -21668,6 +21668,8 @@
 	
 	var _firebase = __webpack_require__(172);
 	
+	var _reactRouter = __webpack_require__(183);
+	
 	var LOGIN = exports.LOGIN = "LOGIN";
 	var LOGOUT = exports.LOGOUT = "LOGOUT";
 	var UPDATE_VIEWING_POST = exports.UPDATE_VIEWING_POST = "UPDATE_VIEWING_POST";
@@ -21706,6 +21708,7 @@
 	
 	function auth0Login() {
 	  return function (dispatch) {
+	    _reactRouter.browserHistory.push('/');
 	    _auth.lock.show();
 	  };
 	}
