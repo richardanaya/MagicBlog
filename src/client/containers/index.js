@@ -2,28 +2,27 @@ import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actionCreators from '../actions'
+import PostSummarized from '../components/postSummarized'
 
-class index extends Component {
+class IndexContainer extends Component {
   constructor (props) {
     super(props);
     //this.handleOnFilterChange = this.handleOnFilterChange.bind(this);
   }
 
-
   render () {
-
     return (
         <div>
-          Hey!
+          <PostSummarized></PostSummarized>
         </div>
     );
   }
 }
 
 
-index = connect(
+IndexContainer = connect(
     state => ({app: state.app}),
     (dispatch)=>({ actions: bindActionCreators(actionCreators, dispatch) })
-)(index);
+)(IndexContainer);
 
-export default index;
+export default IndexContainer;

@@ -1,12 +1,20 @@
 
-import {LOGIN,LOGOUT,LOAD_PROFILE} from "./actions"
+import {LOGIN,LOGOUT,LOAD_PROFILE,UPDATE_VIEWING_POST} from "./actions"
+import  {LOCATION_CHANGE} from 'react-router-redux'
+import {listenToPost} from './firebase'
 
 export default function(state = {
     name: "",
     picture: "",
-    loginToken : null
+    loginToken : null,
+    viewingPost: null
 }, action) {
     switch (action.type) {
+        case UPDATE_VIEWING_POST:
+            return {
+                ...state,
+                viewingPost: action.post
+            }
         case LOGIN:
             localStorage.setItem('id_token',action.loginToken);
             return {

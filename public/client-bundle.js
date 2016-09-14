@@ -54,7 +54,7 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _redux = __webpack_require__(172);
+	__webpack_require__(282);
 	
 	var _reactRedux = __webpack_require__(187);
 	
@@ -66,44 +66,32 @@
 	
 	var _app2 = _interopRequireDefault(_app);
 	
-	var _index = __webpack_require__(265);
+	var _index = __webpack_require__(267);
 	
 	var _index2 = _interopRequireDefault(_index);
 	
-	var _about = __webpack_require__(266);
+	var _post = __webpack_require__(269);
 	
-	var _about2 = _interopRequireDefault(_about);
+	var _post2 = _interopRequireDefault(_post);
 	
-	var _reducers = __webpack_require__(267);
-	
-	var _reducers2 = _interopRequireDefault(_reducers);
-	
-	__webpack_require__(268);
-	
-	var _reduxThunk = __webpack_require__(272);
-	
-	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+	__webpack_require__(276);
 	
 	var _actions = __webpack_require__(263);
 	
 	var _auth = __webpack_require__(264);
 	
+	var _store = __webpack_require__(281);
+	
+	var _store2 = _interopRequireDefault(_store);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var middleware = [_reduxThunk2.default, (0, _reactRouterRedux.routerMiddleware)(_reactRouter.browserHistory)];
-	
-	// Add the reducer to your store on the `routing` key
-	var store = (0, _redux.createStore)((0, _redux.combineReducers)({
-	  app: _reducers2.default,
-	  routing: _reactRouterRedux.routerReducer
-	}), _redux.applyMiddleware.apply(undefined, middleware));
-	
 	// Create an enhanced history that syncs navigation events with the store
-	var history = (0, _reactRouterRedux.syncHistoryWithStore)(_reactRouter.browserHistory, store);
+	var history = (0, _reactRouterRedux.syncHistoryWithStore)(_reactRouter.browserHistory, _store2.default);
 	
 	_reactDom2.default.render(_react2.default.createElement(
 	  _reactRedux.Provider,
-	  { store: store },
+	  { store: _store2.default },
 	  _react2.default.createElement(
 	    _reactRouter.Router,
 	    { history: history },
@@ -111,7 +99,8 @@
 	      _reactRouter.Route,
 	      { path: '/', component: _app2.default },
 	      _react2.default.createElement(_reactRouter.IndexRoute, { component: _index2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'about', component: _about2.default })
+	      _react2.default.createElement(_reactRouter.Route, { path: 'post', component: _post2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: 'post/:postID', component: _post2.default })
 	    )
 	  )
 	), document.getElementById('app'));
@@ -123,11 +112,11 @@
 	
 	if (storedToken !== null && storedDelegationToken !== null && storedProfile !== null) {
 	  firebase.auth().signInWithCustomToken(storedDelegationToken).then(function () {
-	    store.dispatch((0, _actions.login)(storedToken));
-	    store.dispatch((0, _actions.loadProfile)(JSON.parse(storedProfile)));
+	    _store2.default.dispatch((0, _actions.login)(storedToken));
+	    _store2.default.dispatch((0, _actions.loadProfile)(JSON.parse(storedProfile)));
 	  }).catch(function (error) {
 	    debugger;
-	    store.dispatch((0, _actions.logout)());
+	    _store2.default.dispatch((0, _actions.logout)());
 	  });
 	} else {
 	  _auth.lock.on("authenticated", function (authResult) {
@@ -146,21 +135,21 @@
 	        localStorage.setItem("delegation_token", result.id_token);
 	        // Exchange the delegate token for a Firebase auth token
 	        firebase.auth().signInWithCustomToken(result.id_token).then(function () {
-	          store.dispatch((0, _actions.login)(authResult.idToken));
+	          _store2.default.dispatch((0, _actions.login)(authResult.idToken));
 	          _auth.lock.getProfile(idToken, function (err, profile) {
 	            if (err) {
 	              return alert('There was an error getting the profile: ' + err.message);
 	            }
 	            localStorage.setItem("profile", JSON.stringify(profile));
-	            store.dispatch((0, _actions.loadProfile)(profile));
+	            _store2.default.dispatch((0, _actions.loadProfile)(profile));
 	          });
 	        }).catch(function (error) {
 	          debugger;
-	          store.dispatch((0, _actions.logout)());
+	          _store2.default.dispatch((0, _actions.logout)());
 	        });
 	      } else {
 	        debugger;
-	        store.dispatch((0, _actions.logout)());
+	        _store2.default.dispatch((0, _actions.logout)());
 	      }
 	    });
 	  });
@@ -29051,7 +29040,7 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	
 	var _react = __webpack_require__(1);
@@ -29066,50 +29055,60 @@
 	
 	var actionCreators = _interopRequireWildcard(_actions);
 	
+	var _header = __webpack_require__(265);
+	
+	var _header2 = _interopRequireDefault(_header);
+	
+	var _footer = __webpack_require__(266);
+	
+	var _footer2 = _interopRequireDefault(_footer);
+	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function app(props) {
-	  var login = _react2.default.createElement(
-	    'div',
-	    null,
-	    _react2.default.createElement(
-	      'button',
-	      { onClick: function onClick() {
-	          return props.actions.auth0Login();
-	        } },
-	      'Login'
-	    )
-	  );
-	  var logout = _react2.default.createElement(
-	    'div',
-	    null,
-	    _react2.default.createElement(
-	      'button',
-	      { onClick: function onClick() {
-	          return props.actions.logout();
-	        } },
-	      'Logout'
-	    )
-	  );
-	  var authSection = props.app.loginToken === null ? login : logout;
-	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    props.app.name,
-	    authSection,
-	    props.children
-	  );
+	function AppContainer(props) {
+	    var login = _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	            'button',
+	            { onClick: function onClick() {
+	                    return props.actions.auth0Login();
+	                } },
+	            'Login'
+	        )
+	    );
+	    var logout = _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	            'button',
+	            { onClick: function onClick() {
+	                    return props.actions.logout();
+	                } },
+	            'Logout'
+	        )
+	    );
+	    var authSection = props.app.loginToken === null ? login : logout;
+	    return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(_header2.default, null),
+	        props.app.name,
+	        authSection,
+	        props.children,
+	        _react2.default.createElement(_footer2.default, null)
+	    );
 	}
 	
-	app = (0, _reactRedux.connect)(function (state) {
-	  return { app: state.app };
+	AppContainer = (0, _reactRedux.connect)(function (state) {
+	    return { app: state.app };
 	}, function (dispatch) {
-	  return { actions: (0, _redux.bindActionCreators)(actionCreators, dispatch) };
-	})(app);
+	    return { actions: (0, _redux.bindActionCreators)(actionCreators, dispatch) };
+	})(AppContainer);
 	
-	exports.default = app;
+	exports.default = AppContainer;
 
 /***/ },
 /* 263 */
@@ -29120,7 +29119,9 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.LOAD_PROFILE = exports.LOGOUT = exports.LOGIN = undefined;
+	exports.LOAD_PROFILE = exports.UPDATE_VIEWING_POST = exports.LOGOUT = exports.LOGIN = undefined;
+	exports.createPost = createPost;
+	exports.updateViewingPost = updateViewingPost;
 	exports.auth0Login = auth0Login;
 	exports.login = login;
 	exports.logout = logout;
@@ -29128,9 +29129,30 @@
 	
 	var _auth = __webpack_require__(264);
 	
+	var _reactRouterRedux = __webpack_require__(257);
+	
+	var _firebase = __webpack_require__(282);
+	
 	var LOGIN = exports.LOGIN = "LOGIN";
 	var LOGOUT = exports.LOGOUT = "LOGOUT";
+	var UPDATE_VIEWING_POST = exports.UPDATE_VIEWING_POST = "UPDATE_VIEWING_POST";
 	var LOAD_PROFILE = exports.LOAD_PROFILE = "LOAD_PROFILE";
+	function createPost(post) {
+	  return function (dispatch) {
+	    var ref = firebase.database().ref("/posts/" + firebase.auth().currentUser.uid + "/").push();
+	    ref.set(post).then(function (a) {
+	      dispatch((0, _reactRouterRedux.push)('/post/' + ref.key));
+	    });
+	  };
+	}
+	
+	function updateViewingPost(post) {
+	  return {
+	    type: UPDATE_VIEWING_POST,
+	    post: post
+	  };
+	}
+	
 	function auth0Login() {
 	  return function (dispatch) {
 	    _auth.lock.show();
@@ -29183,6 +29205,61 @@
 	  value: true
 	});
 	
+	exports.default = function (props) {
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    'Header ',
+	    _react2.default.createElement(
+	      _reactRouter.Link,
+	      { to: '/post' },
+	      'Create'
+	    )
+	  );
+	};
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRouter = __webpack_require__(196);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 266 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (props) {
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    'Footer'
+	  );
+	};
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(1);
@@ -29197,6 +29274,10 @@
 	
 	var actionCreators = _interopRequireWildcard(_actions);
 	
+	var _postSummarized = __webpack_require__(268);
+	
+	var _postSummarized2 = _interopRequireDefault(_postSummarized);
+	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -29207,41 +29288,40 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var index = function (_Component) {
-	  _inherits(index, _Component);
+	var IndexContainer = function (_Component) {
+	  _inherits(IndexContainer, _Component);
 	
-	  function index(props) {
-	    _classCallCheck(this, index);
+	  function IndexContainer(props) {
+	    _classCallCheck(this, IndexContainer);
 	
-	    return _possibleConstructorReturn(this, (index.__proto__ || Object.getPrototypeOf(index)).call(this, props));
+	    return _possibleConstructorReturn(this, (IndexContainer.__proto__ || Object.getPrototypeOf(IndexContainer)).call(this, props));
 	    //this.handleOnFilterChange = this.handleOnFilterChange.bind(this);
 	  }
 	
-	  _createClass(index, [{
+	  _createClass(IndexContainer, [{
 	    key: 'render',
 	    value: function render() {
-	
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        'Hey!'
+	        _react2.default.createElement(_postSummarized2.default, null)
 	      );
 	    }
 	  }]);
 	
-	  return index;
+	  return IndexContainer;
 	}(_react.Component);
 	
-	index = (0, _reactRedux.connect)(function (state) {
+	IndexContainer = (0, _reactRedux.connect)(function (state) {
 	  return { app: state.app };
 	}, function (dispatch) {
 	  return { actions: (0, _redux.bindActionCreators)(actionCreators, dispatch) };
-	})(index);
+	})(IndexContainer);
 	
-	exports.default = index;
+	exports.default = IndexContainer;
 
 /***/ },
-/* 266 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29250,27 +29330,364 @@
 	  value: true
 	});
 	
+	exports.default = function (props) {
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    'Post summary'
+	  );
+	};
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 269 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
 	var _react = __webpack_require__(1);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _reactRedux = __webpack_require__(187);
+	
+	var _redux = __webpack_require__(172);
+	
+	var _actions = __webpack_require__(263);
+	
+	var actionCreators = _interopRequireWildcard(_actions);
+	
+	var _postRead = __webpack_require__(270);
+	
+	var _postRead2 = _interopRequireDefault(_postRead);
+	
+	var _postEdit = __webpack_require__(274);
+	
+	var _postEdit2 = _interopRequireDefault(_postEdit);
+	
+	var _firebase = __webpack_require__(282);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function about(props) {
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var PostContainer = function (_Component) {
+	  _inherits(PostContainer, _Component);
+	
+	  function PostContainer(props) {
+	    _classCallCheck(this, PostContainer);
+	
+	    var _this = _possibleConstructorReturn(this, (PostContainer.__proto__ || Object.getPrototypeOf(PostContainer)).call(this, props));
+	
+	    _this.onPostCreate = _this.onPostCreate.bind(_this);
+	    _this.onPostDelete = _this.onPostDelete.bind(_this);
+	    _this.onPostSave = _this.onPostSave.bind(_this);
+	    _this.onPostChange = _this.onPostChange.bind(_this);
+	    _this.state = {
+	      post: {
+	        title: "",
+	        username: "",
+	        datetime: new Date().getTime(),
+	        content: ""
+	      }
+	    };
+	    return _this;
+	  }
+	
+	  _createClass(PostContainer, [{
+	    key: 'onPostCreate',
+	    value: function onPostCreate() {
+	      this.props.actions.createPost(this.state.post);
+	    }
+	  }, {
+	    key: 'onPostDelete',
+	    value: function onPostDelete() {}
+	  }, {
+	    key: 'onPostSave',
+	    value: function onPostSave() {}
+	  }, {
+	    key: 'onPostChange',
+	    value: function onPostChange(prop, val) {
+	      var newState = this.state;
+	      newState.post[prop] = val;
+	      this.setState(newState);
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+	
+	      if (this.props.params.postID) {
+	        var ref = firebase.database().ref("/posts/google-oauth2|113101168187756225718/" + this.props.params.postID);
+	        ref.on("value", function (snapshot) {
+	          var latestPost = snapshot.val();
+	          _this2.setState(_extends({}, _this2.state, {
+	            post: latestPost
+	          }));
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var contents = null;
+	      if (this.props.params.postID) {
+	        contents = _react2.default.createElement(_postRead2.default, { post: this.state.post });
+	      } else {
+	        contents = _react2.default.createElement(_postEdit2.default, { post: this.state.post, onPostCreate: this.onPostCreate, onPostChange: this.onPostChange });
+	      }
+	
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        contents
+	      );
+	    }
+	  }]);
+	
+	  return PostContainer;
+	}(_react.Component);
+	
+	PostContainer = (0, _reactRedux.connect)(function (state) {
+	  return function () {
+	    return { app: state.app };
+	  };
+	}, function (dispatch) {
+	  return { actions: (0, _redux.bindActionCreators)(actionCreators, dispatch) };
+	})(PostContainer);
+	
+	exports.default = PostContainer;
+
+/***/ },
+/* 270 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	exports.default = function (props) {
+	    var date = new Date(props.post.datetime);
+	    var dateString = date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear();
+	    return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	            'div',
+	            null,
+	            props.post.title
+	        ),
+	        _react2.default.createElement(
+	            'div',
+	            null,
+	            props.post.username
+	        ),
+	        _react2.default.createElement(
+	            'div',
+	            null,
+	            dateString
+	        ),
+	        _react2.default.createElement(
+	            'div',
+	            null,
+	            props.post.content
+	        ),
+	        _react2.default.createElement(_comment2.default, null),
+	        _react2.default.createElement(_commentEdit2.default, null),
+	        _react2.default.createElement(_commentEntryArea2.default, null)
+	    );
+	};
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _comment = __webpack_require__(271);
+	
+	var _comment2 = _interopRequireDefault(_comment);
+	
+	var _commentEdit = __webpack_require__(272);
+	
+	var _commentEdit2 = _interopRequireDefault(_commentEdit);
+	
+	var _commentEntryArea = __webpack_require__(273);
+	
+	var _commentEntryArea2 = _interopRequireDefault(_commentEntryArea);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 271 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (props) {
 	  return _react2.default.createElement(
 	    'div',
 	    null,
-	    'About'
+	    'comment'
 	  );
-	}
+	};
 	
-	exports.default = about;
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 267 */
+/* 272 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (props) {
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    'edit comment'
+	  );
+	};
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 273 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (props) {
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    'create comment'
+	  );
+	};
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (props) {
+	  var timestamp = 1301090400;
+	  var date = new Date(props.post.datetime);
+	  var dateString = date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear();
+	  return _react2.default.createElement(
+	    "div",
+	    null,
+	    _react2.default.createElement(
+	      "div",
+	      null,
+	      "Title: ",
+	      _react2.default.createElement("input", { defaultValue: props.post.title, onChange: function onChange(e) {
+	          return props.onPostChange("title", e.target.value);
+	        } })
+	    ),
+	    _react2.default.createElement(
+	      "div",
+	      null,
+	      "Author: ",
+	      _react2.default.createElement("input", { defaultValue: props.post.username, onChange: function onChange(e) {
+	          return props.onPostChange("username", e.target.value);
+	        } })
+	    ),
+	    _react2.default.createElement(
+	      "div",
+	      null,
+	      "Date: ",
+	      dateString
+	    ),
+	    _react2.default.createElement(
+	      "div",
+	      null,
+	      _react2.default.createElement("textarea", { defaultValue: props.post.content, onChange: function onChange(e) {
+	          return props.onPostChange("content", e.target.value);
+	        } })
+	    ),
+	    _react2.default.createElement(
+	      "div",
+	      null,
+	      _react2.default.createElement(
+	        "button",
+	        { onClick: props.onPostDelete, style: { display: props.onPostDelete !== undefined ? "block" : "none" } },
+	        "Delete"
+	      ),
+	      _react2.default.createElement(
+	        "button",
+	        { onClick: props.onPostSave, style: { display: props.onPostSave !== undefined ? "block" : "none" } },
+	        "Save"
+	      ),
+	      _react2.default.createElement(
+	        "button",
+	        { onClick: props.onPostCreate, style: { display: props.onPostCreate !== undefined ? "block" : "none" } },
+	        "Create"
+	      )
+	    )
+	  );
+	};
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 275 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -29282,11 +29699,16 @@
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? {
 	        name: "",
 	        picture: "",
-	        loginToken: null
+	        loginToken: null,
+	        viewingPost: null
 	    } : arguments[0];
 	    var action = arguments[1];
 	
 	    switch (action.type) {
+	        case _actions.UPDATE_VIEWING_POST:
+	            return _extends({}, state, {
+	                viewingPost: action.post
+	            });
 	        case _actions.LOGIN:
 	            localStorage.setItem('id_token', action.loginToken);
 	            return _extends({}, state, {
@@ -29315,18 +29737,22 @@
 	};
 	
 	var _actions = __webpack_require__(263);
+	
+	var _reactRouterRedux = __webpack_require__(257);
+	
+	var _firebase = __webpack_require__(282);
 
 /***/ },
-/* 268 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(269);
+	var content = __webpack_require__(277);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(271)(content, {});
+	var update = __webpack_require__(279)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -29343,10 +29769,10 @@
 	}
 
 /***/ },
-/* 269 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(270)();
+	exports = module.exports = __webpack_require__(278)();
 	// imports
 	
 	
@@ -29357,7 +29783,7 @@
 
 
 /***/ },
-/* 270 */
+/* 278 */
 /***/ function(module, exports) {
 
 	/*
@@ -29413,7 +29839,7 @@
 
 
 /***/ },
-/* 271 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -29665,7 +30091,7 @@
 
 
 /***/ },
-/* 272 */
+/* 280 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -29691,6 +30117,62 @@
 	thunk.withExtraArgument = createThunkMiddleware;
 	
 	exports['default'] = thunk;
+
+/***/ },
+/* 281 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _reducers = __webpack_require__(275);
+	
+	var _reducers2 = _interopRequireDefault(_reducers);
+	
+	var _reduxThunk = __webpack_require__(280);
+	
+	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+	
+	var _reactRouter = __webpack_require__(196);
+	
+	var _reactRouterRedux = __webpack_require__(257);
+	
+	var _redux = __webpack_require__(172);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var middleware = [_reduxThunk2.default, (0, _reactRouterRedux.routerMiddleware)(_reactRouter.browserHistory)];
+	
+	// Add the reducer to your store on the `routing` key
+	exports.default = (0, _redux.createStore)((0, _redux.combineReducers)({
+	    app: _reducers2.default,
+	    routing: _reactRouterRedux.routerReducer
+	}), _redux.applyMiddleware.apply(undefined, middleware));
+
+/***/ },
+/* 282 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _store = __webpack_require__(281);
+	
+	var _store2 = _interopRequireDefault(_store);
+	
+	var _actions = __webpack_require__(263);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var config = {
+	  apiKey: "AIzaSyCuK7mCcImTdoTFEROZkI37Ab1Ub4rJkgk",
+	  authDomain: "magicblog-bcd26.firebaseapp.com",
+	  databaseURL: "https://magicblog-bcd26.firebaseio.com",
+	  storageBucket: "magicblog-bcd26.appspot.com"
+	};
+	firebase.initializeApp(config);
 
 /***/ }
 /******/ ]);
