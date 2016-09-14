@@ -29068,35 +29068,10 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function AppContainer(props) {
-	    var login = _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	            'button',
-	            { onClick: function onClick() {
-	                    return props.actions.auth0Login();
-	                } },
-	            'Login'
-	        )
-	    );
-	    var logout = _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	            'button',
-	            { onClick: function onClick() {
-	                    return props.actions.logout();
-	                } },
-	            'Logout'
-	        )
-	    );
-	    var authSection = props.app.loginToken === null ? login : logout;
 	    return _react2.default.createElement(
 	        'div',
 	        null,
 	        _react2.default.createElement(_header2.default, null),
-	        props.app.name,
-	        authSection,
 	        props.children,
 	        _react2.default.createElement(_footer2.default, null)
 	    );
@@ -29215,7 +29190,40 @@
 	  value: true
 	});
 	
-	exports.default = function (props) {
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(187);
+	
+	var _redux = __webpack_require__(172);
+	
+	var _actions = __webpack_require__(263);
+	
+	var actionCreators = _interopRequireWildcard(_actions);
+	
+	var _reactRouter = __webpack_require__(196);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function Header(props) {
+	  var login = _react2.default.createElement(
+	    'a',
+	    { href: '#', onClick: function onClick() {
+	        return props.actions.auth0Login();
+	      } },
+	    'Login'
+	  );
+	  var logout = _react2.default.createElement(
+	    'a',
+	    { href: '#', onClick: function onClick() {
+	        return props.actions.logout();
+	      } },
+	    'Logout'
+	  );
+	  var authSection = props.app.loginToken === null ? login : logout;
 	  return _react2.default.createElement(
 	    'div',
 	    null,
@@ -29229,17 +29237,21 @@
 	      _reactRouter.Link,
 	      { to: '/post' },
 	      'Create'
-	    )
+	    ),
+	    ' ',
+	    authSection,
+	    ' ',
+	    props.app.name
 	  );
-	};
+	}
 	
-	var _react = __webpack_require__(1);
+	Header = (0, _reactRedux.connect)(function (state) {
+	  return { app: state.app };
+	}, function (dispatch) {
+	  return { actions: (0, _redux.bindActionCreators)(actionCreators, dispatch) };
+	})(Header);
 	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactRouter = __webpack_require__(196);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	exports.default = Header;
 
 /***/ },
 /* 266 */
