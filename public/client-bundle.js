@@ -29143,7 +29143,14 @@
 	    var ref = firebase.database().ref("/posts/" + uid + "/").push();
 	    ref.set(post).then(function (a) {
 	      var timelineRef = firebase.database().ref("/timeline/").push();
-	      timelineRef.set({ post_id: ref.key, datetime: post.datetime, uid: uid });
+	      timelineRef.set({
+	        post_id: ref.key,
+	        datetime: post.datetime,
+	        uid: uid,
+	        username: post.username,
+	        title: post.title,
+	        summary: post.content.substring(0, 120)
+	      });
 	      dispatch((0, _reactRouterRedux.push)('/post/' + uid + "/" + ref.key));
 	    });
 	  };
@@ -29358,20 +29365,32 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	
 	exports.default = function (props) {
-	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    'Post summary ',
-	    _react2.default.createElement(
-	      _reactRouter.Link,
-	      { to: '/post/' + props.timelinePost.uid + "/" + props.timelinePost.post_id },
-	      'Link'
-	    )
-	  );
+	    var _props$timelinePost = props.timelinePost;
+	    var uid = _props$timelinePost.uid;
+	    var post_id = _props$timelinePost.post_id;
+	    var datetime = _props$timelinePost.datetime;
+	    var title = _props$timelinePost.title;
+	    var username = _props$timelinePost.username;
+	    var summary = _props$timelinePost.summary;
+	
+	
+	    return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: '/post/' + uid + "/" + post_id },
+	            title
+	        ),
+	        ' by ',
+	        username,
+	        datetime,
+	        summary
+	    );
 	};
 	
 	var _react = __webpack_require__(1);

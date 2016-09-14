@@ -12,7 +12,14 @@ export function createPost(post){
     var ref = firebase.database().ref("/posts/"+uid+"/").push();
     ref.set(post).then(function(a){
         var timelineRef = firebase.database().ref("/timeline/").push();
-        timelineRef.set({post_id:ref.key,datetime:post.datetime,uid:uid})
+        timelineRef.set({
+          post_id:ref.key,
+          datetime:post.datetime,
+          uid:uid,
+          username:post.username,
+          title:post.title,
+          summary:post.content.substring(0,120)
+        })
         dispatch(push('/post/'+uid+"/"+ref.key))
     })
   }
