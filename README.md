@@ -19,6 +19,7 @@ Check the app out on https://mysterious-spire-72024.herokuapp.com/
 * Posts and Comments are deletable
 * Timeline showed summarized posts and paginated by 10
 * All data is realtime updated
+* Looks decent in mobile
 
 #Setup
 
