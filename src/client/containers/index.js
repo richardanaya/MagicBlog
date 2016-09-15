@@ -10,24 +10,35 @@ class IndexContainer extends Component {
     this.state = {
       timeline:[]
     }
-    this.ref = firebase.database().ref("/timeline");
+
     this.handleTimeline = this.handleTimeline.bind(this);
+    this.onMore = this.onMore.bind(this);
+    this.count = 10;
   }
 
   handleTimeline(snapshot){
+    var posts = [];
+    var timelineVal = snapshot.val();
+    for(var i in timelineVal){
+      posts.push(timelineVal[i]);
+    }
     this.setState(
       {
-        timeline:snapshot.val()
+        timeline:posts
       }
     )
   }
 
-  componentDidMount() {
+  onMore(){
+    this.ref.off("value",this.handleTimeline);
+    this.count += 10;
+    this.ref = firebase.database().ref("/timeline").orderByChild("datetime").limitToFirst(this.count).startAt(0);
     this.ref.on("value",this.handleTimeline);
   }
 
-  componentWillUnmount() {
-    this.ref.off("value",this.handleTimeline);
+  componentDidMount() {
+    this.ref = firebase.database().ref("/timeline").orderByChild("datetime").limitToFirst(this.count).startAt(0);
+    this.ref.on("value",this.handleTimeline);
   }
 
   render () {
@@ -37,13 +48,17 @@ class IndexContainer extends Component {
       timeline.push(<div className="mdl-cell mdl-cell--6-col" key={this.state.timeline[i].post_id}><PostSummarized timelinePost={this.state.timeline[i]}></PostSummarized></div>)
     }
 
+    var hasMore = timeline.length == this.count;
+    var moreButton = hasMore?(<a className="mdl-button mdl-button--raised mdl-js-ripple-effect" onClick={this.onMore}>More</a>):null;
+
     return (
         <div className="CenterHolder">
           <div className="CenterHolder">
             <div className="mdl-grid">
               {timeline}
             </div>
-          </div>;
+            {moreButton}
+          </div>
         </div>
     );
   }
