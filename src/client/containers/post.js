@@ -51,7 +51,6 @@ class PostContainer extends Component {
 
   onComment() {
     var ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID+"/comments").push();
-    debugger;
     ref.set({
       name: this.props.app.name,
       datetime: (new Date).getTime(),

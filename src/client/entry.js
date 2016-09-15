@@ -78,12 +78,10 @@ else {
             store.dispatch(loadProfile(profile))
           });
         }).catch(function(error) {
-          debugger;
           store.dispatch(logout())
         });
       }
       else {
-        debugger;
         store.dispatch(logout())
       }
     });

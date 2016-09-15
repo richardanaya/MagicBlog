@@ -158,11 +158,9 @@
 	            _store2.default.dispatch((0, _actions.loadProfile)(profile));
 	          });
 	        }).catch(function (error) {
-	          debugger;
 	          _store2.default.dispatch((0, _actions.logout)());
 	        });
 	      } else {
-	        debugger;
 	        _store2.default.dispatch((0, _actions.logout)());
 	      }
 	    });
@@ -29788,7 +29786,6 @@
 	      var _this2 = this;
 	
 	      var ref = firebase.database().ref("/posts/" + this.props.params.userID + "/" + this.props.params.postID + "/comments").push();
-	      debugger;
 	      ref.set({
 	        name: this.props.app.name,
 	        datetime: new Date().getTime(),
