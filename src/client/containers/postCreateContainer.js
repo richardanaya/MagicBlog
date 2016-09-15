@@ -6,7 +6,7 @@ import PostRead from '../components/postRead'
 import PostEdit from '../components/postEdit'
 import {listenToPost} from '../firebase'
 
-class PostContainer extends Component {
+class PostCreateContainer extends Component {
   constructor (props) {
     super(props);
     this.onPostCreate = this.onPostCreate.bind(this);
@@ -61,9 +61,9 @@ class PostContainer extends Component {
 }
 
 
-PostContainer = connect(
+PostCreateContainer = connect(
     state => ()=>({app: state.app}),
     (dispatch)=>({ actions: bindActionCreators(actionCreators, dispatch) })
-)(PostContainer);
+)(PostCreateContainer);
 
-export default PostContainer;
+export default PostCreateContainer;

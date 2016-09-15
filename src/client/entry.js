@@ -5,11 +5,11 @@ import './firebase'
 import { Provider } from 'react-redux'
 import { Router, Route, browserHistory, IndexRoute } from 'react-router'
 import { syncHistoryWithStore, routerReducer, routerMiddleware } from 'react-router-redux'
-import AppContainer from "./containers/app"
-import IndexContainer from "./containers/index"
-import PostContainer from "./containers/post"
-import PostCreateContainer from "./containers/postCreate"
-import PostEditContainer from "./containers/postEdit"
+import AppContainer from "./containers/appContainer"
+import IndexContainer from "./containers/indexContainer"
+import PostContainer from "./containers/postContainer"
+import PostCreateContainer from "./containers/postCreateContainer"
+import PostEditContainer from "./containers/postEditContainer"
 import "./styles/app.less"
 import {bootstrap} from "./actions"
 import store from './store'
