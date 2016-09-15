@@ -22,6 +22,9 @@ class IndexContainer extends Component {
     for(var i in timelineVal){
       posts.push(timelineVal[i]);
     }
+    posts.sort(function(a,b){
+      return b.datetime-a.datetime;
+    })
     this.setState(
       {
         timeline:posts
@@ -32,12 +35,12 @@ class IndexContainer extends Component {
   onMore(){
     this.ref.off("value",this.handleTimeline);
     this.count += 10;
-    this.ref = firebase.database().ref("/timeline").orderByChild("datetime").limitToFirst(this.count).startAt(0);
+    this.ref = firebase.database().ref("/timeline").orderByChild("datetime").limitToLast(this.count);
     this.ref.on("value",this.handleTimeline);
   }
 
   componentDidMount() {
-    this.ref = firebase.database().ref("/timeline").orderByChild("datetime").limitToFirst(this.count).startAt(0);
+    this.ref = firebase.database().ref("/timeline").orderByChild("datetime").limitToLast(this.count);
     this.ref.on("value",this.handleTimeline);
   }
 
