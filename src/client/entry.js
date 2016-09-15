@@ -11,8 +11,7 @@ import PostContainer from "./containers/post"
 import PostCreateContainer from "./containers/postCreate"
 import PostEditContainer from "./containers/postEdit"
 import "./styles/app.less"
-import {login,loadProfile,logout} from "./actions"
-import {auth0,lock} from "./auth0"
+import {bootstrap} from "./actions"
 import store from './store'
 
 
@@ -35,55 +34,4 @@ ReactDOM.render(
 
 if(window.location.pathname != "/"){
   window.location = window.location.protocol+"//"+window.location.host;
-}
-//Authentication & Restoration
-const storedToken = localStorage.getItem("id_token");
-const storedDelegationToken = localStorage.getItem("delegation_token");
-const storedProfile = localStorage.getItem("profile");
-const userID = localStorage.getItem("userID");
-
-if(storedToken !== null && storedDelegationToken !== null && storedProfile !== null && userID !== null ){
-  firebase.auth().signInWithCustomToken(storedDelegationToken).then(function(){
-    store.dispatch(login(storedToken,userID));
-    store.dispatch(loadProfile(JSON.parse(storedProfile)));
-  }).catch(function(error) {
-    store.dispatch(logout());
-  });
-}
-else {
-  lock.on("authenticated", function(authResult) {
-    const idToken = authResult.idToken;
-
-    // Set the options to retreive a firebase delegation token
-    const options = {
-      id_token : idToken,
-      target: '9RjVS1keVE6dzidUUIaeKKxwCYkeClgG',
-      api : 'firebase'
-    };
-
-    // Make a call to the Auth0 '/delegate'
-    auth0.getDelegationToken(options, function(err, result) {
-      if(!err) {
-        localStorage.setItem("delegation_token",result.id_token);
-        // Exchange the delegate token for a Firebase auth token
-        firebase.auth().signInWithCustomToken(result.id_token).then(function(){
-          var uid = firebase.auth().currentUser.uid;
-          localStorage.setItem("userID",uid);
-          store.dispatch(login(authResult.idToken,uid));
-          lock.getProfile(idToken, function (err, profile) {
-            if (err) {
-              return alert('There was an error getting the profile: ' + err.message);
-            }
-            localStorage.setItem("profile",JSON.stringify(profile));
-            store.dispatch(loadProfile(profile));
-          });
-        }).catch(function(error) {
-          store.dispatch(logout());
-        });
-      }
-      else {
-        store.dispatch(logout());
-      }
-    });
-  });
 }

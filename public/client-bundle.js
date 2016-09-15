@@ -86,8 +86,6 @@
 	
 	var _actions = __webpack_require__(175);
 	
-	var _auth = __webpack_require__(176);
-	
 	var _store = __webpack_require__(173);
 	
 	var _store2 = _interopRequireDefault(_store);
@@ -116,55 +114,6 @@
 	
 	if (window.location.pathname != "/") {
 	  window.location = window.location.protocol + "//" + window.location.host;
-	}
-	//Authentication & Restoration
-	var storedToken = localStorage.getItem("id_token");
-	var storedDelegationToken = localStorage.getItem("delegation_token");
-	var storedProfile = localStorage.getItem("profile");
-	var userID = localStorage.getItem("userID");
-	
-	if (storedToken !== null && storedDelegationToken !== null && storedProfile !== null && userID !== null) {
-	  firebase.auth().signInWithCustomToken(storedDelegationToken).then(function () {
-	    _store2.default.dispatch((0, _actions.login)(storedToken, userID));
-	    _store2.default.dispatch((0, _actions.loadProfile)(JSON.parse(storedProfile)));
-	  }).catch(function (error) {
-	    _store2.default.dispatch((0, _actions.logout)());
-	  });
-	} else {
-	  _auth.lock.on("authenticated", function (authResult) {
-	    var idToken = authResult.idToken;
-	
-	    // Set the options to retreive a firebase delegation token
-	    var options = {
-	      id_token: idToken,
-	      target: '9RjVS1keVE6dzidUUIaeKKxwCYkeClgG',
-	      api: 'firebase'
-	    };
-	
-	    // Make a call to the Auth0 '/delegate'
-	    _auth.auth0.getDelegationToken(options, function (err, result) {
-	      if (!err) {
-	        localStorage.setItem("delegation_token", result.id_token);
-	        // Exchange the delegate token for a Firebase auth token
-	        firebase.auth().signInWithCustomToken(result.id_token).then(function () {
-	          var uid = firebase.auth().currentUser.uid;
-	          localStorage.setItem("userID", uid);
-	          _store2.default.dispatch((0, _actions.login)(authResult.idToken, uid));
-	          _auth.lock.getProfile(idToken, function (err, profile) {
-	            if (err) {
-	              return alert('There was an error getting the profile: ' + err.message);
-	            }
-	            localStorage.setItem("profile", JSON.stringify(profile));
-	            _store2.default.dispatch((0, _actions.loadProfile)(profile));
-	          });
-	        }).catch(function (error) {
-	          _store2.default.dispatch((0, _actions.logout)());
-	        });
-	      } else {
-	        _store2.default.dispatch((0, _actions.logout)());
-	      }
-	    });
-	  });
 	}
 
 /***/ },
@@ -21656,6 +21605,7 @@
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
+	exports.bootstrap = bootstrap;
 	exports.createPost = createPost;
 	exports.updatePost = updatePost;
 	exports.auth0Login = auth0Login;
@@ -21664,18 +21614,74 @@
 	exports.logout = logout;
 	exports.loadProfile = loadProfile;
 	
-	var _auth = __webpack_require__(176);
-	
 	var _reactRouterRedux = __webpack_require__(177);
 	
 	var _firebase = __webpack_require__(172);
 	
 	var _reactRouter = __webpack_require__(182);
 	
+	var _auth = __webpack_require__(176);
+	
 	var LOGIN = exports.LOGIN = "LOGIN";
 	var LOGOUT = exports.LOGOUT = "LOGOUT";
 	var UPDATE_VIEWING_POST = exports.UPDATE_VIEWING_POST = "UPDATE_VIEWING_POST";
 	var LOAD_PROFILE = exports.LOAD_PROFILE = "LOAD_PROFILE";
+	function bootstrap() {
+	  return function (dispatch) {
+	    //Authentication & Restoration
+	    var storedToken = localStorage.getItem("id_token");
+	    var storedDelegationToken = localStorage.getItem("delegation_token");
+	    var storedProfile = localStorage.getItem("profile");
+	    var userID = localStorage.getItem("userID");
+	
+	    if (storedToken !== null && storedDelegationToken !== null && storedProfile !== null && userID !== null) {
+	      firebase.auth().signInWithCustomToken(storedDelegationToken).then(function () {
+	        dispatch(login(storedToken, userID));
+	        dispatch(loadProfile(JSON.parse(storedProfile)));
+	        _reactRouter.browserHistory.push("/");
+	      }).catch(function (error) {
+	        dispatch(logout());
+	      });
+	    } else {
+	      _auth.lock.on("authenticated", function (authResult) {
+	        var idToken = authResult.idToken;
+	
+	        // Set the options to retreive a firebase delegation token
+	        var options = {
+	          id_token: idToken,
+	          target: '9RjVS1keVE6dzidUUIaeKKxwCYkeClgG',
+	          api: 'firebase'
+	        };
+	
+	        // Make a call to the Auth0 '/delegate'
+	        _auth.auth0.getDelegationToken(options, function (err, result) {
+	          if (!err) {
+	            localStorage.setItem("delegation_token", result.id_token);
+	            // Exchange the delegate token for a Firebase auth token
+	            firebase.auth().signInWithCustomToken(result.id_token).then(function () {
+	              var uid = firebase.auth().currentUser.uid;
+	              localStorage.setItem("userID", uid);
+	              dispatch(login(authResult.idToken, uid));
+	              _auth.lock.getProfile(idToken, function (err, profile) {
+	                if (err) {
+	                  return alert('There was an error getting the profile: ' + err.message);
+	                }
+	                localStorage.setItem("profile", JSON.stringify(profile));
+	                dispatch(loadProfile(profile));
+	                _reactRouter.browserHistory.push("/");
+	              });
+	            }).catch(function (error) {
+	              dispatch(logout());
+	            });
+	          } else {
+	            dispatch(logout());
+	          }
+	        });
+	      });
+	    }
+	  };
+	}
+	
 	function createPost(post) {
 	  return function (dispatch, getState) {
 	    var uid = getState().app.userID;
@@ -29319,8 +29325,10 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(1);
 	
@@ -29346,24 +29354,50 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function AppContainer(props) {
-	    return _react2.default.createElement(
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var AppContainer = function (_Component) {
+	  _inherits(AppContainer, _Component);
+	
+	  function AppContainer(props) {
+	    _classCallCheck(this, AppContainer);
+	
+	    return _possibleConstructorReturn(this, (AppContainer.__proto__ || Object.getPrototypeOf(AppContainer)).call(this, props));
+	  }
+	
+	  _createClass(AppContainer, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
 	        'div',
 	        null,
 	        _react2.default.createElement(_header2.default, null),
 	        _react2.default.createElement(
-	            'main',
-	            { className: 'mdl-layout__content' },
-	            props.children
+	          'main',
+	          { className: 'mdl-layout__content' },
+	          this.props.children
 	        ),
 	        _react2.default.createElement(_footer2.default, null)
-	    );
-	}
+	      );
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.props.actions.bootstrap();
+	    }
+	  }]);
+	
+	  return AppContainer;
+	}(_react.Component);
 	
 	AppContainer = (0, _reactRedux.connect)(function (state) {
-	    return { app: state.app };
+	  return { app: state.app };
 	}, function (dispatch) {
-	    return { actions: (0, _redux.bindActionCreators)(actionCreators, dispatch) };
+	  return { actions: (0, _redux.bindActionCreators)(actionCreators, dispatch) };
 	})(AppContainer);
 	
 	exports.default = AppContainer;
@@ -29981,7 +30015,7 @@
 	      _react2.default.createElement(
 	        "div",
 	        { className: "mdl-textfield mdl-js-textfield" },
-	        _react2.default.createElement("input", { className: "mdl-textfield__input", type: "text", id: "sample1", value: props.post.title, onChange: function onChange(e) {
+	        _react2.default.createElement("input", { className: "mdl-textfield__input", maxLength: "200", type: "text", id: "sample1", value: props.post.title, onChange: function onChange(e) {
 	            return props.onPostChange("title", e.target.value);
 	          } }),
 	        _react2.default.createElement(
@@ -29994,7 +30028,7 @@
 	      _react2.default.createElement(
 	        "div",
 	        { className: "mdl-textfield mdl-js-textfield" },
-	        _react2.default.createElement("textarea", { className: "mdl-textfield__input", type: "text", rows: "3", id: "sample5", value: props.post.content, onChange: function onChange(e) {
+	        _react2.default.createElement("textarea", { className: "mdl-textfield__input", maxLength: "5000", type: "text", rows: "3", id: "sample5", value: props.post.content, onChange: function onChange(e) {
 	            return props.onPostChange("content", e.target.value);
 	          } }),
 	        _react2.default.createElement(

@@ -99,7 +99,7 @@ class PostContainer extends Component {
   }
 
   render () {
-    const comments = this.state.comments.map(c=>(<Comment key={c.id} cid={c.id} comment={c.comment} name={c.name} datetime={c.datetime} isMine={c.creator == this.props.app.userID} onDeleteComment={this.onDeleteComment}/>))
+    const comments = this.state.comments.map(c=>(<Comment key={c.id} cid={c.id} comment={c.comment} name={c.name} datetime={c.datetime} isMine={c.creator == this.props.app.userID} onDeleteComment={this.onDeleteComment}/>));
 
     const commentsEntry = (this.props.app.loginToken==null)?null:(<CommentEntryArea name={this.props.app.name} newComment={this.state.newComment} onComment={this.onComment} onCommentChange={this.onCommentChange}/>);
 
