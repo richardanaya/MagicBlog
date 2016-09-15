@@ -29817,7 +29817,20 @@
 	            'div',
 	            { className: 'mdl-grid' },
 	            _react2.default.createElement(_postRead2.default, { post: this.state.post }),
-	            deleteButton,
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'mdl-cell mdl-cell--12-col' },
+	              deleteButton
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'mdl-cell mdl-cell--12-col' },
+	              _react2.default.createElement(
+	                'h6',
+	                null,
+	                'Comments'
+	              )
+	            ),
 	            comments,
 	            commentsEntry
 	          )

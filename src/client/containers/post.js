@@ -97,7 +97,8 @@ class PostContainer extends Component {
           <div className="CenterHolder">
             <div className="mdl-grid">
               <PostRead post={this.state.post}/>
-              {deleteButton}
+              <div className="mdl-cell mdl-cell--12-col">{deleteButton}</div>
+              <div className="mdl-cell mdl-cell--12-col"><h6>Comments</h6></div>
               {comments}
               {commentsEntry}
 
