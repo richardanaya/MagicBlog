@@ -18,7 +18,6 @@ export function createPost(post){
       title:post.title,
       content:post.content
     };
-    debugger;
     ref.set(newPost).then(function(a){
         var timelineRef = firebase.database().ref("/timeline/").push();
         timelineRef.set({
@@ -62,10 +61,11 @@ export function auth0Logout(){
   }
 }
 
-export function login(loginToken){
+export function login(loginToken,userID){
   return {
       type: LOGIN,
-      loginToken
+      loginToken,
+      userID
   };
 }
 

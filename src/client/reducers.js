@@ -6,6 +6,7 @@ import {listenToPost} from './firebase'
 export default function(state = {
     name: "",
     picture: "",
+    userID: null,
     loginToken : null,
     viewingPost: null
 }, action) {
@@ -19,14 +20,16 @@ export default function(state = {
             localStorage.setItem('id_token',action.loginToken);
             return {
                 ...state,
-                loginToken:action.loginToken
+                loginToken:action.loginToken,
+                userID:action.userID
             }
         case LOGOUT:
             return {
                 ...state,
                 name: "",
                 picture: "",
-                loginToken:null
+                loginToken:null,
+                userID:null
             }
         case LOAD_PROFILE:
           return {

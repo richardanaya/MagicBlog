@@ -93,33 +93,37 @@
 	// Create an enhanced history that syncs navigation events with the store
 	var history = (0, _reactRouterRedux.syncHistoryWithStore)(_reactRouter.browserHistory, _store2.default);
 	
-	_reactDom2.default.render(_react2.default.createElement(
-	  _reactRedux.Provider,
-	  { store: _store2.default },
-	  _react2.default.createElement(
-	    _reactRouter.Router,
-	    { history: history },
+	function render() {
+	  _reactDom2.default.render(_react2.default.createElement(
+	    _reactRedux.Provider,
+	    { store: _store2.default },
 	    _react2.default.createElement(
-	      _reactRouter.Route,
-	      { path: '/', component: _app2.default },
-	      _react2.default.createElement(_reactRouter.IndexRoute, { component: _index2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'post', component: _postEdit2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'post/:userID/:postID', component: _post2.default })
+	      _reactRouter.Router,
+	      { history: history },
+	      _react2.default.createElement(
+	        _reactRouter.Route,
+	        { path: '/', component: _app2.default },
+	        _react2.default.createElement(_reactRouter.IndexRoute, { component: _index2.default }),
+	        _react2.default.createElement(_reactRouter.Route, { path: 'post', component: _postEdit2.default }),
+	        _react2.default.createElement(_reactRouter.Route, { path: 'post/:userID/:postID', component: _post2.default })
+	      )
 	    )
-	  )
-	), document.getElementById('app'));
+	  ), document.getElementById('app'));
+	}
+	render();
 	
 	//Authentication & Restoration
 	var storedToken = localStorage.getItem("id_token");
 	var storedDelegationToken = localStorage.getItem("delegation_token");
 	var storedProfile = localStorage.getItem("profile");
+	var userID = localStorage.getItem("userID");
 	
-	if (storedToken !== null && storedDelegationToken !== null && storedProfile !== null) {
+	if (storedToken !== null && storedDelegationToken !== null && storedProfile !== null && userID !== null) {
+	  _reactRouter.browserHistory.push("/");
 	  firebase.auth().signInWithCustomToken(storedDelegationToken).then(function () {
-	    _store2.default.dispatch((0, _actions.login)(storedToken));
+	    _store2.default.dispatch((0, _actions.login)(storedToken, userID));
 	    _store2.default.dispatch((0, _actions.loadProfile)(JSON.parse(storedProfile)));
 	  }).catch(function (error) {
-	    debugger;
 	    _store2.default.dispatch((0, _actions.logout)());
 	  });
 	} else {
@@ -139,7 +143,10 @@
 	        localStorage.setItem("delegation_token", result.id_token);
 	        // Exchange the delegate token for a Firebase auth token
 	        firebase.auth().signInWithCustomToken(result.id_token).then(function () {
-	          _store2.default.dispatch((0, _actions.login)(authResult.idToken));
+	          _reactRouter.browserHistory.push("/");
+	          var uid = firebase.auth().currentUser.uid;
+	          localStorage.setItem("userID", uid);
+	          _store2.default.dispatch((0, _actions.login)(authResult.idToken, uid));
 	          _auth.lock.getProfile(idToken, function (err, profile) {
 	            if (err) {
 	              return alert('There was an error getting the profile: ' + err.message);
@@ -21602,6 +21609,7 @@
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? {
 	        name: "",
 	        picture: "",
+	        userID: null,
 	        loginToken: null,
 	        viewingPost: null
 	    } : arguments[0];
@@ -21615,13 +21623,15 @@
 	        case _actions.LOGIN:
 	            localStorage.setItem('id_token', action.loginToken);
 	            return _extends({}, state, {
-	                loginToken: action.loginToken
+	                loginToken: action.loginToken,
+	                userID: action.userID
 	            });
 	        case _actions.LOGOUT:
 	            return _extends({}, state, {
 	                name: "",
 	                picture: "",
-	                loginToken: null
+	                loginToken: null,
+	                userID: null
 	            });
 	        case _actions.LOAD_PROFILE:
 	            return _extends({}, state, {
@@ -21680,7 +21690,6 @@
 	      title: post.title,
 	      content: post.content
 	    };
-	    debugger;
 	    ref.set(newPost).then(function (a) {
 	      var timelineRef = firebase.database().ref("/timeline/").push();
 	      timelineRef.set({
@@ -21724,10 +21733,11 @@
 	  };
 	}
 	
-	function login(loginToken) {
+	function login(loginToken, userID) {
 	  return {
 	    type: LOGIN,
-	    loginToken: loginToken
+	    loginToken: loginToken,
+	    userID: userID
 	  };
 	}
 	
@@ -29686,6 +29696,8 @@
 	
 	var _commentEntryArea2 = _interopRequireDefault(_commentEntryArea);
 	
+	var _reactRouter = __webpack_require__(183);
+	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -29716,6 +29728,7 @@
 	    };
 	    _this.onComment = _this.onComment.bind(_this);
 	    _this.onCommentChange = _this.onCommentChange.bind(_this);
+	    _this.onDelete = _this.onDelete.bind(_this);
 	    return _this;
 	  }
 	
@@ -29727,6 +29740,14 @@
 	      }));
 	    }
 	  }, {
+	    key: 'onDelete',
+	    value: function onDelete() {
+	      firebase.database().ref("/posts/" + this.props.params.userID + "/" + this.props.params.postID).remove();
+	      firebase.database().ref("/timeline").orderByChild("post_id").equalTo(this.props.params.postID).on("child_added", function (snapshot) {
+	        firebase.database().ref("/timeline/" + snapshot.key).remove();
+	      });
+	    }
+	  }, {
 	    key: 'onComment',
 	    value: function onComment() {
 	      var _this2 = this;
@@ -29734,7 +29755,7 @@
 	      var ref = firebase.database().ref("/posts/" + this.props.params.userID + "/" + this.props.params.postID + "/comments").push();
 	
 	      ref.set({
-	        name: "blah",
+	        name: this.props.app.name,
 	        datetime: new Date().getTime(),
 	        comment: this.state.newComment
 	      }).then(function () {
@@ -29751,6 +29772,10 @@
 	      //get latest story
 	      var ref = firebase.database().ref("/posts/" + this.props.params.userID + "/" + this.props.params.postID);
 	      ref.on("value", function (snapshot) {
+	        if (!snapshot.exists()) {
+	          _reactRouter.browserHistory.push("/");
+	          return;
+	        }
 	        var latestPost = snapshot.val();
 	        var comments = [];
 	        for (var i in latestPost.comments) {
@@ -29771,6 +29796,17 @@
 	
 	      var commentsEntry = this.props.app.loginToken == null ? null : _react2.default.createElement(_commentEntryArea2.default, { name: this.props.app.name, newComment: this.state.newComment, onComment: this.onComment, onCommentChange: this.onCommentChange });
 	
+	      var madeBySame = false;
+	      if (this.props.app.userID !== null) {
+	        madeBySame = this.props.params.userID == this.props.app.userID;
+	      }
+	
+	      var deleteButton = madeBySame ? _react2.default.createElement(
+	        'a',
+	        { className: 'mdl-button mdl-button--raised mdl-js-ripple-effect', onClick: this.onDelete },
+	        'Delete'
+	      ) : null;
+	
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'CenterHolder' },
@@ -29781,6 +29817,7 @@
 	            'div',
 	            { className: 'mdl-grid' },
 	            _react2.default.createElement(_postRead2.default, { post: this.state.post }),
+	            deleteButton,
 	            comments,
 	            commentsEntry
 	          )

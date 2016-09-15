@@ -8,6 +8,7 @@ import {listenToPost} from '../firebase'
 import Comment from '../components/comment'
 import CommentEdit from '../components/commentEdit'
 import CommentEntryArea from '../components/commentEntryArea'
+import { browserHistory } from 'react-router'
 
 class PostContainer extends Component {
   constructor (props) {
@@ -24,6 +25,7 @@ class PostContainer extends Component {
     }
     this.onComment = this.onComment.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
+    this.onDelete = this.onDelete.bind(this);
   }
 
   onCommentChange(comment) {
@@ -33,11 +35,18 @@ class PostContainer extends Component {
     })
   }
 
+  onDelete(){
+    firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID).remove()
+    firebase.database().ref("/timeline").orderByChild("post_id").equalTo(this.props.params.postID).on("child_added", function(snapshot) {
+      firebase.database().ref("/timeline/"+snapshot.key).remove()
+    });
+  }
+
   onComment() {
     var ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID+"/comments").push();
 
     ref.set({
-      name: "blah",
+      name: this.props.app.name,
       datetime: (new Date).getTime(),
       comment:this.state.newComment
     }).then(()=>{
@@ -52,6 +61,10 @@ class PostContainer extends Component {
     //get latest story
     var ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID);
     ref.on("value",(snapshot)=>{
+      if(!snapshot.exists()){
+        browserHistory.push("/")
+        return;
+      }
       var latestPost = snapshot.val();
       var comments = [];
       for(var i in latestPost.comments){
@@ -72,13 +85,22 @@ class PostContainer extends Component {
 
     var commentsEntry = (this.props.app.loginToken==null)?null:(<CommentEntryArea name={this.props.app.name} newComment={this.state.newComment} onComment={this.onComment} onCommentChange={this.onCommentChange}/>);
 
+    var madeBySame = false;
+    if(this.props.app.userID !== null){
+      madeBySame = this.props.params.userID == this.props.app.userID;
+    }
+
+    var deleteButton = madeBySame?(<a className="mdl-button mdl-button--raised mdl-js-ripple-effect" onClick={this.onDelete}>Delete</a>):null;
+
     return (
         <div className="CenterHolder">
           <div className="CenterHolder">
             <div className="mdl-grid">
               <PostRead post={this.state.post}/>
+              {deleteButton}
               {comments}
               {commentsEntry}
+
             </div>
           </div>;
         </div>
