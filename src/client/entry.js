@@ -8,8 +8,8 @@ import { syncHistoryWithStore, routerReducer, routerMiddleware } from 'react-rou
 import AppContainer from "./containers/app"
 import IndexContainer from "./containers/index"
 import PostContainer from "./containers/post"
+import PostCreateContainer from "./containers/postCreate"
 import PostEditContainer from "./containers/postEdit"
-
 import "./styles/app.less"
 import {login,loadProfile,logout} from "./actions"
 import {auth0,lock} from "./auth0"
@@ -24,7 +24,8 @@ ReactDOM.render(
       <Router history={history}>
         <Route path="/" component={AppContainer}>
           <IndexRoute component={IndexContainer}/>
-          <Route path="post" component={PostEditContainer}/>
+          <Route path="post" component={PostCreateContainer}/>
+          <Route path="post/edit/:userID/:postID" component={PostEditContainer}/>
           <Route path="post/:userID/:postID" component={PostContainer}/>
         </Route>
       </Router>

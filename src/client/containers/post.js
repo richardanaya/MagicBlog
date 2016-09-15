@@ -6,7 +6,6 @@ import PostRead from '../components/postRead'
 import PostEdit from '../components/postEdit'
 import {listenToPost} from '../firebase'
 import Comment from '../components/comment'
-import CommentEdit from '../components/commentEdit'
 import CommentEntryArea from '../components/commentEntryArea'
 import { browserHistory } from 'react-router'
 
@@ -26,6 +25,7 @@ class PostContainer extends Component {
     this.onComment = this.onComment.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
     this.onDelete = this.onDelete.bind(this);
+    this.onEdit = this.onEdit.bind(this);
     this.onDeleteComment = this.onDeleteComment.bind(this);
   }
 
@@ -41,6 +41,10 @@ class PostContainer extends Component {
     firebase.database().ref("/timeline").orderByChild("post_id").equalTo(this.props.params.postID).on("child_added", function(snapshot) {
       firebase.database().ref("/timeline/"+snapshot.key).remove()
     });
+  }
+
+  onEdit(){
+    browserHistory.push("/post/edit/"+this.props.params.userID+"/"+this.props.params.postID);
   }
 
   onComment() {
@@ -98,6 +102,7 @@ class PostContainer extends Component {
       madeBySame = this.props.params.userID == this.props.app.userID;
     }
 
+    var editButton = madeBySame?(<a className="mdl-button mdl-button--raised mdl-js-ripple-effect" onClick={this.onEdit}>Edit</a>):null;
     var deleteButton = madeBySame?(<a className="mdl-button mdl-button--raised mdl-js-ripple-effect" onClick={this.onDelete}>Delete</a>):null;
 
     return (
@@ -105,11 +110,10 @@ class PostContainer extends Component {
           <div className="CenterHolder">
             <div className="mdl-grid">
               <PostRead post={this.state.post}/>
-              <div className="mdl-cell mdl-cell--12-col">{deleteButton}</div>
+              <div className="mdl-cell mdl-cell--12-col">{editButton}&nbsp;&nbsp;{deleteButton}</div>
               <div className="mdl-cell mdl-cell--12-col"><h6>Comments</h6></div>
               {comments}
               {commentsEntry}
-
             </div>
           </div>;
         </div>

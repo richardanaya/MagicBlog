@@ -9,20 +9,21 @@ import {listenToPost} from '../firebase'
 class PostContainer extends Component {
   constructor (props) {
     super(props);
-    this.onPostCreate = this.onPostCreate.bind(this);
+    this.onPostCreate = this.onPostSave.bind(this);
     this.onPostChange = this.onPostChange.bind(this);
     this.state = {
         post: {
           title: "",
           username: props.app.name,
           datetime: (new Date).getTime(),
-          content: ""
+          content: "",
+          comments: []
         }
     }
   }
 
-  onPostCreate(){
-      this.props.actions.updatePost(this.props.params.postID,this.state.post);
+  onPostSave(){
+      this.props.actions.createPost(this.state.post);
   }
 
   onPostChange(prop,val){
@@ -32,25 +33,20 @@ class PostContainer extends Component {
   }
 
   componentDidMount() {
-    //get latest story
-    var ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID);
-    ref.on("value",(snapshot)=>{
-      if(!snapshot.exists()){
-        browserHistory.push("/")
-        return;
-      }
-      var latestPost = snapshot.val();
-      this.setState(
-        {
-          ...this.state,
-          post:latestPost
+    //reset if we are writing
+    this.setState({
+        post: {
+          title: "",
+          username: this.props.app.name,
+          datetime: (new Date).getTime(),
+          content: "",
+          comments: []
         }
-      )
-    })
+    });
   }
 
   render () {
-    var contents = (<PostEdit post={this.state.post} completeText="Save" onPostComplete={this.onPostCreate} onPostChange={this.onPostChange}/>);
+    var contents = (<PostEdit post={this.state.post} completeText="Create" onPostComplete={this.onPostSave} onPostChange={this.onPostChange}/>);
 
     return (
         <div className="CenterHolder">

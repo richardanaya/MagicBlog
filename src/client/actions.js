@@ -33,6 +33,26 @@ export function createPost(post){
   }
 }
 
+export function updatePost(key,post){
+  return (dispatch,getState)=>{
+    const uid = getState().app.userID;
+    firebase.database().ref("/posts/"+uid+"/"+key).set(
+      post
+    ).then(function(){
+        firebase.database().ref("/timeline").orderByChild("post_id").equalTo(key).on("child_added", function(snapshot) {
+          var timeline = snapshot.val();
+          var newTimeline = {
+            ...timeline,
+            title:post.title,
+            summary:post.content.substring(0,120)
+          }
+          firebase.database().ref("/timeline/"+snapshot.key).set(newTimeline);
+        });
+        dispatch(push('/post/'+uid+"/"+key))
+    })
+  }
+}
+
 export function updateViewingPost(post){
   return {
       type: UPDATE_VIEWING_POST,
