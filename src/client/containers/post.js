@@ -35,7 +35,7 @@ class PostContainer extends Component {
     this.setState({
       ...this.state,
       newComment: comment
-    })
+    });
   }
 
   onDelete(){
@@ -50,7 +50,7 @@ class PostContainer extends Component {
   }
 
   onComment() {
-    var ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID+"/comments").push();
+    const ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID+"/comments").push();
     ref.set({
       name: this.props.app.name,
       datetime: (new Date).getTime(),
@@ -61,7 +61,7 @@ class PostContainer extends Component {
         ...this.state,
         newComment: ""
       })
-    })
+    });
   }
 
   onDeleteComment(key) {
@@ -70,11 +70,11 @@ class PostContainer extends Component {
 
   onHandlePost(snapshot){
     if(!snapshot.exists()){
-      browserHistory.push("/")
+      browserHistory.push("/");
       return;
     }
-    var latestPost = snapshot.val();
-    var comments = [];
+    const latestPost = snapshot.val();
+    const comments = [];
     for(var i in latestPost.comments){
       var comment = latestPost.comments[i];
       comment.id = i;
@@ -86,30 +86,30 @@ class PostContainer extends Component {
         post:latestPost,
         comments: comments
       }
-    )
+    );
   }
 
   componentDidMount() {
     //get latest story
-    this.ref.on("value",this.onHandlePost)
+    this.ref.on("value",this.onHandlePost);
   }
 
   componentWillUnmount(){
-    this.ref.off("value",this.onHandlePost)
+    this.ref.off("value",this.onHandlePost);
   }
 
   render () {
-    var comments = this.state.comments.map(c=>(<Comment key={c.id} cid={c.id} comment={c.comment} name={c.name} datetime={c.datetime} isMine={c.creator == this.props.app.userID} onDeleteComment={this.onDeleteComment}/>))
+    const comments = this.state.comments.map(c=>(<Comment key={c.id} cid={c.id} comment={c.comment} name={c.name} datetime={c.datetime} isMine={c.creator == this.props.app.userID} onDeleteComment={this.onDeleteComment}/>))
 
-    var commentsEntry = (this.props.app.loginToken==null)?null:(<CommentEntryArea name={this.props.app.name} newComment={this.state.newComment} onComment={this.onComment} onCommentChange={this.onCommentChange}/>);
+    const commentsEntry = (this.props.app.loginToken==null)?null:(<CommentEntryArea name={this.props.app.name} newComment={this.state.newComment} onComment={this.onComment} onCommentChange={this.onCommentChange}/>);
 
     var madeBySame = false;
     if(this.props.app.userID !== null){
       madeBySame = this.props.params.userID == this.props.app.userID;
     }
 
-    var editButton = madeBySame?(<a className="mdl-button mdl-button--raised mdl-js-ripple-effect" onClick={this.onEdit}>Edit</a>):null;
-    var deleteButton = madeBySame?(<a className="mdl-button mdl-button--raised mdl-js-ripple-effect" onClick={this.onDelete}>Delete</a>):null;
+    const editButton = madeBySame?(<a className="mdl-button mdl-button--raised mdl-js-ripple-effect" onClick={this.onEdit}>Edit</a>):null;
+    const deleteButton = madeBySame?(<a className="mdl-button mdl-button--raised mdl-js-ripple-effect" onClick={this.onDelete}>Delete</a>):null;
 
     return (
         <div className="CenterHolder">

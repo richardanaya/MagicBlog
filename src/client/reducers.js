@@ -16,7 +16,7 @@ export default function(state = {
                 ...state,
                 loginToken:action.loginToken,
                 userID:action.userID
-            }
+            };
         case LOGOUT:
             return {
                 ...state,
@@ -24,13 +24,13 @@ export default function(state = {
                 picture: "",
                 loginToken:null,
                 userID:null
-            }
+            };
         case LOAD_PROFILE:
           return {
               ...state,
               name:action.profile.name,
               picture:action.profile.picture
-          }
+          };
         default:
             return state
     }

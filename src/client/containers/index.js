@@ -9,7 +9,7 @@ class IndexContainer extends Component {
     super(props);
     this.state = {
       timeline:[]
-    }
+    };
 
     this.handleTimeline = this.handleTimeline.bind(this);
     this.onMore = this.onMore.bind(this);
@@ -29,7 +29,7 @@ class IndexContainer extends Component {
       {
         timeline:posts
       }
-    )
+    );
   }
 
   onMore(){
@@ -45,18 +45,18 @@ class IndexContainer extends Component {
   }
 
   componentWillUnmount(){
-    this.ref.off("value",this.handleTimeline)
+    this.ref.off("value",this.handleTimeline);
   }
 
   render () {
-    var timeline = [];
+    const timeline = [];
 
     for(var i in this.state.timeline){
       timeline.push(<div className="mdl-cell mdl-cell--6-col" key={this.state.timeline[i].post_id}><PostSummarized timelinePost={this.state.timeline[i]}></PostSummarized></div>)
     }
 
-    var hasMore = timeline.length == this.count;
-    var moreButton = hasMore?(<a className="mdl-button mdl-button--raised mdl-js-ripple-effect" onClick={this.onMore}>More</a>):null;
+    const hasMore = timeline.length == this.count;
+    const moreButton = hasMore?(<a className="mdl-button mdl-button--raised mdl-js-ripple-effect" onClick={this.onMore}>More</a>):null;
 
     return (
         <div className="CenterHolder">

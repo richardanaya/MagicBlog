@@ -1,15 +1,15 @@
-import React, { Component } from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actionCreators from '../actions'
 import { Router, Route, Link } from 'react-router'
 
 function Header(props){
-  var login =  (<a href="#" className="mdl-layout__tab" onClick={()=>props.actions.auth0Login()}>Login</a>);
-  var logout = (<a href="#" className="mdl-layout__tab" onClick={()=>props.actions.auth0Logout()}>Logout</a>);
-  var authSection = props.app.loginToken===null?login:logout;
-  var writeLink = props.app.loginToken===null?null:(<Link className="mdl-layout__tab" to={'/post'}>Write</Link>);
-  var profile = props.app.loginToken===null?null:(<span className="ProfileUser mdl-layout__tab"><img src={props.app.picture}/>{props.app.name}</span>);
+  const login =  (<a href="#" className="mdl-layout__tab" onClick={()=>props.actions.auth0Login()}>Login</a>);
+  const logout = (<a href="#" className="mdl-layout__tab" onClick={()=>props.actions.auth0Logout()}>Logout</a>);
+  const authSection = props.app.loginToken===null?login:logout;
+  const writeLink = props.app.loginToken===null?null:(<Link className="mdl-layout__tab" to={'/post'}>Write</Link>);
+  const profile = props.app.loginToken===null?null:(<span className="ProfileUser mdl-layout__tab"><img src={props.app.picture}/>{props.app.name}</span>);
   return (
     <div>
     <header className="mdl-layout__header mdl-layout__header--scroll mdl-color--primary">

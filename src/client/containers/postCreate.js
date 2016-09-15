@@ -19,7 +19,7 @@ class PostContainer extends Component {
           content: "",
           comments: []
         }
-    }
+    };
   }
 
   onPostCreate(){
@@ -27,7 +27,7 @@ class PostContainer extends Component {
   }
 
   onPostChange(prop,val){
-      var newState = this.state;
+      const newState = this.state;
       newState.post[prop] = val;
       this.setState(newState);
   }
@@ -46,7 +46,7 @@ class PostContainer extends Component {
   }
 
   render () {
-    var contents = (<PostEdit post={this.state.post} completeText="Create" onPostComplete={this.onPostCreate} onPostChange={this.onPostChange}/>);
+    const contents = (<PostEdit post={this.state.post} completeText="Create" onPostComplete={this.onPostCreate} onPostChange={this.onPostChange}/>);
 
     return (
         <div className="CenterHolder">

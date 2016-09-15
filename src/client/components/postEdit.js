@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 export default function(props){
   return (<div className="PostEdit mdl-cell mdl-cell--12-col">
   <form action="#">

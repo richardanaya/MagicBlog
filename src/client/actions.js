@@ -9,7 +9,7 @@ import { browserHistory } from 'react-router'
 
 export function createPost(post){
   return (dispatch,getState)=>{
-    var uid = firebase.auth().currentUser.uid;
+    const uid = getState().app.userID;
     var ref = firebase.database().ref("/posts/"+uid+"/").push();
     var name = getState().app.name;
     var newPost = {

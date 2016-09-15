@@ -20,7 +20,7 @@ class PostContainer extends Component {
           datetime: (new Date).getTime(),
           content: ""
         }
-    }
+    };
   }
 
   onPostSave(){
@@ -28,35 +28,35 @@ class PostContainer extends Component {
   }
 
   onPostChange(prop,val){
-      var newState = this.state;
+      const newState = this.state;
       newState.post[prop] = val;
       this.setState(newState);
   }
 
   handlePost(snapshot){
     if(!snapshot.exists()){
-      browserHistory.push("/")
+      browserHistory.push("/");
       return;
     }
-    var latestPost = snapshot.val();
+    const latestPost = snapshot.val();
     this.setState(
       {
         ...this.state,
         post:latestPost
       }
-    )
+    );
   }
 
   componentDidMount() {
-    this.ref.on("value",this.handlePost)
+    this.ref.on("value",this.handlePost);
   }
 
   componentWillUnmount() {
-    this.ref.off("value",this.handlePost)
+    this.ref.off("value",this.handlePost);
   }
 
   render () {
-    var contents = (<PostEdit post={this.state.post} completeText="Save" onPostComplete={this.onPostSave} onPostChange={this.onPostChange}/>);
+    const contents = (<PostEdit post={this.state.post} completeText="Save" onPostComplete={this.onPostSave} onPostChange={this.onPostChange}/>);
 
     return (
         <div className="CenterHolder">

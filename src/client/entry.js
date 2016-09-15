@@ -17,7 +17,7 @@ import store from './store'
 
 
 // Create an enhanced history that syncs navigation events with the store
-const history = syncHistoryWithStore(browserHistory, store)
+const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render(
     <Provider store={store}>
@@ -31,16 +31,16 @@ ReactDOM.render(
       </Router>
     </Provider>,
     document.getElementById('app')
-)
+);
 
 if(window.location.pathname != "/"){
   window.location = window.location.protocol+"//"+window.location.host;
 }
 //Authentication & Restoration
-var storedToken = localStorage.getItem("id_token");
-var storedDelegationToken = localStorage.getItem("delegation_token");
-var storedProfile = localStorage.getItem("profile");
-var userID = localStorage.getItem("userID");
+const storedToken = localStorage.getItem("id_token");
+const storedDelegationToken = localStorage.getItem("delegation_token");
+const storedProfile = localStorage.getItem("profile");
+const userID = localStorage.getItem("userID");
 
 if(storedToken !== null && storedDelegationToken !== null && storedProfile !== null && userID !== null ){
   firebase.auth().signInWithCustomToken(storedDelegationToken).then(function(){
@@ -52,10 +52,10 @@ if(storedToken !== null && storedDelegationToken !== null && storedProfile !== n
 }
 else {
   lock.on("authenticated", function(authResult) {
-    var idToken = authResult.idToken;
+    const idToken = authResult.idToken;
 
     // Set the options to retreive a firebase delegation token
-    var options = {
+    const options = {
       id_token : idToken,
       target: '9RjVS1keVE6dzidUUIaeKKxwCYkeClgG',
       api : 'firebase'
@@ -69,20 +69,20 @@ else {
         firebase.auth().signInWithCustomToken(result.id_token).then(function(){
           var uid = firebase.auth().currentUser.uid;
           localStorage.setItem("userID",uid);
-          store.dispatch(login(authResult.idToken,uid))
+          store.dispatch(login(authResult.idToken,uid));
           lock.getProfile(idToken, function (err, profile) {
             if (err) {
               return alert('There was an error getting the profile: ' + err.message);
             }
             localStorage.setItem("profile",JSON.stringify(profile));
-            store.dispatch(loadProfile(profile))
+            store.dispatch(loadProfile(profile));
           });
         }).catch(function(error) {
-          store.dispatch(logout())
+          store.dispatch(logout());
         });
       }
       else {
-        store.dispatch(logout())
+        store.dispatch(logout());
       }
     });
   });

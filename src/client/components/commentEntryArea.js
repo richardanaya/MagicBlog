@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 export default function(props){
   return (<div className="mdl-cell mdl-cell--12-col">
     <div className="CommentEntry mdl-textfield mdl-js-textfield">

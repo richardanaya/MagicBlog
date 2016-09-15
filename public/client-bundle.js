@@ -21678,7 +21678,7 @@
 	var LOAD_PROFILE = exports.LOAD_PROFILE = "LOAD_PROFILE";
 	function createPost(post) {
 	  return function (dispatch, getState) {
-	    var uid = firebase.auth().currentUser.uid;
+	    var uid = getState().app.userID;
 	    var ref = firebase.database().ref("/posts/" + uid + "/").push();
 	    var name = getState().app.name;
 	    var newPost = {
@@ -30035,7 +30035,6 @@
 	exports.default = function (props) {
 	  var date = new Date(props.datetime);
 	  var dateString = date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear();
-	
 	  var deleteButton = props.isMine ? _react2.default.createElement(
 	    "a",
 	    { className: "mdl-button mdl-button--raised mdl-js-ripple-effect", onClick: function onClick() {
