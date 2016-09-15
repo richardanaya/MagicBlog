@@ -109,6 +109,9 @@
 	  )
 	), document.getElementById('app'));
 	
+	if (window.location.pathname != "/") {
+	  window.location = window.location.protocol + "//" + window.location.host;
+	}
 	//Authentication & Restoration
 	var storedToken = localStorage.getItem("id_token");
 	var storedDelegationToken = localStorage.getItem("delegation_token");
@@ -29749,11 +29752,12 @@
 	      var _this2 = this;
 	
 	      var ref = firebase.database().ref("/posts/" + this.props.params.userID + "/" + this.props.params.postID + "/comments").push();
-	
+	      debugger;
 	      ref.set({
 	        name: this.props.app.name,
 	        datetime: new Date().getTime(),
-	        comment: this.state.newComment
+	        comment: this.state.newComment,
+	        creator: this.props.app.userID
 	      }).then(function () {
 	        _this2.setState(_extends({}, _this2.state, {
 	          newComment: ""
@@ -29796,7 +29800,7 @@
 	      var _this4 = this;
 	
 	      var comments = this.state.comments.map(function (c) {
-	        return _react2.default.createElement(_comment2.default, { key: c.id, cid: c.id, comment: c.comment, name: c.name, datetime: c.datetime, isMine: true, onDeleteComment: _this4.onDeleteComment });
+	        return _react2.default.createElement(_comment2.default, { key: c.id, cid: c.id, comment: c.comment, name: c.name, datetime: c.datetime, isMine: c.creator == _this4.props.app.userID, onDeleteComment: _this4.onDeleteComment });
 	      });
 	
 	      var commentsEntry = this.props.app.loginToken == null ? null : _react2.default.createElement(_commentEntryArea2.default, { name: this.props.app.name, newComment: this.state.newComment, onComment: this.onComment, onCommentChange: this.onCommentChange });

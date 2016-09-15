@@ -32,7 +32,9 @@ ReactDOM.render(
     document.getElementById('app')
 )
 
-
+if(window.location.pathname != "/"){
+  window.location = window.location.protocol+"//"+window.location.host;
+}
 //Authentication & Restoration
 var storedToken = localStorage.getItem("id_token");
 var storedDelegationToken = localStorage.getItem("delegation_token");
