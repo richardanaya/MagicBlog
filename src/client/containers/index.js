@@ -44,6 +44,10 @@ class IndexContainer extends Component {
     this.ref.on("value",this.handleTimeline);
   }
 
+  componentWillUnmount(){
+    this.ref.off("value",this.handleTimeline)
+  }
+
   render () {
     var timeline = [];
 

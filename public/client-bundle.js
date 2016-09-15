@@ -29597,6 +29597,11 @@
 	      this.ref.on("value", this.handleTimeline);
 	    }
 	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.ref.off("value", this.handleTimeline);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var timeline = [];
