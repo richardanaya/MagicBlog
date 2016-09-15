@@ -26,6 +26,7 @@ class PostContainer extends Component {
     this.onComment = this.onComment.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
     this.onDelete = this.onDelete.bind(this);
+    this.onDeleteComment = this.onDeleteComment.bind(this);
   }
 
   onCommentChange(comment) {
@@ -57,6 +58,10 @@ class PostContainer extends Component {
     })
   }
 
+  onDeleteComment(key) {
+    firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID+"/comments/"+key).remove();
+  }
+
   componentDidMount() {
     //get latest story
     var ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID);
@@ -68,7 +73,9 @@ class PostContainer extends Component {
       var latestPost = snapshot.val();
       var comments = [];
       for(var i in latestPost.comments){
-        comments.push(latestPost.comments[i]);
+        var comment = latestPost.comments[i];
+        comment.id = i;
+        comments.push(comment);
       }
       this.setState(
         {
@@ -81,7 +88,7 @@ class PostContainer extends Component {
   }
 
   render () {
-    var comments = this.state.comments.map(c=>(<Comment key={c.datetime} comment={c.comment} name={c.name} datetime={c.datetime}/>))
+    var comments = this.state.comments.map(c=>(<Comment key={c.id} cid={c.id} comment={c.comment} name={c.name} datetime={c.datetime} isMine={true} onDeleteComment={this.onDeleteComment}/>))
 
     var commentsEntry = (this.props.app.loginToken==null)?null:(<CommentEntryArea name={this.props.app.name} newComment={this.state.newComment} onComment={this.onComment} onCommentChange={this.onCommentChange}/>);
 

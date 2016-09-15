@@ -19,21 +19,18 @@ import store from './store'
 // Create an enhanced history that syncs navigation events with the store
 const history = syncHistoryWithStore(browserHistory, store)
 
-function render(){
-  ReactDOM.render(
-      <Provider store={store}>
-        <Router history={history}>
-          <Route path="/" component={AppContainer}>
-            <IndexRoute component={IndexContainer}/>
-            <Route path="post" component={PostEditContainer}/>
-            <Route path="post/:userID/:postID" component={PostContainer}/>
-          </Route>
-        </Router>
-      </Provider>,
-      document.getElementById('app')
-  )
-}
-render();
+ReactDOM.render(
+    <Provider store={store}>
+      <Router history={history}>
+        <Route path="/" component={AppContainer}>
+          <IndexRoute component={IndexContainer}/>
+          <Route path="post" component={PostEditContainer}/>
+          <Route path="post/:userID/:postID" component={PostContainer}/>
+        </Route>
+      </Router>
+    </Provider>,
+    document.getElementById('app')
+)
 
 
 //Authentication & Restoration
@@ -43,7 +40,6 @@ var storedProfile = localStorage.getItem("profile");
 var userID = localStorage.getItem("userID");
 
 if(storedToken !== null && storedDelegationToken !== null && storedProfile !== null && userID !== null ){
-  browserHistory.push("/")
   firebase.auth().signInWithCustomToken(storedDelegationToken).then(function(){
     store.dispatch(login(storedToken,userID));
     store.dispatch(loadProfile(JSON.parse(storedProfile)));
@@ -68,7 +64,6 @@ else {
         localStorage.setItem("delegation_token",result.id_token);
         // Exchange the delegate token for a Firebase auth token
         firebase.auth().signInWithCustomToken(result.id_token).then(function(){
-          browserHistory.push("/");
           var uid = firebase.auth().currentUser.uid;
           localStorage.setItem("userID",uid);
           store.dispatch(login(authResult.idToken,uid))
