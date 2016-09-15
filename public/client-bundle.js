@@ -30161,7 +30161,7 @@
 	    var _this = _possibleConstructorReturn(this, (PostContainer.__proto__ || Object.getPrototypeOf(PostContainer)).call(this, props));
 	
 	    _this.ref = firebase.database().ref("/posts/" + _this.props.params.userID + "/" + _this.props.params.postID);
-	    _this.onPostCreate = _this.onPostCreate.bind(_this);
+	    _this.onPostSave = _this.onPostSave.bind(_this);
 	    _this.onPostChange = _this.onPostChange.bind(_this);
 	    _this.handlePost = _this.handlePost.bind(_this);
 	    _this.state = {
@@ -30176,8 +30176,8 @@
 	  }
 	
 	  _createClass(PostContainer, [{
-	    key: 'onPostCreate',
-	    value: function onPostCreate() {
+	    key: 'onPostSave',
+	    value: function onPostSave() {
 	      this.props.actions.updatePost(this.props.params.postID, this.state.post);
 	    }
 	  }, {
@@ -30212,7 +30212,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var contents = _react2.default.createElement(_postEdit2.default, { post: this.state.post, completeText: 'Save', onPostComplete: this.onPostCreate, onPostChange: this.onPostChange });
+	      var contents = _react2.default.createElement(_postEdit2.default, { post: this.state.post, completeText: 'Save', onPostComplete: this.onPostSave, onPostChange: this.onPostChange });
 	
 	      return _react2.default.createElement(
 	        'div',
@@ -30644,7 +30644,7 @@
 	
 	    var _this = _possibleConstructorReturn(this, (PostContainer.__proto__ || Object.getPrototypeOf(PostContainer)).call(this, props));
 	
-	    _this.onPostCreate = _this.onPostSave.bind(_this);
+	    _this.onPostCreate = _this.onPostCreate.bind(_this);
 	    _this.onPostChange = _this.onPostChange.bind(_this);
 	    _this.state = {
 	      post: {
@@ -30659,8 +30659,8 @@
 	  }
 	
 	  _createClass(PostContainer, [{
-	    key: 'onPostSave',
-	    value: function onPostSave() {
+	    key: 'onPostCreate',
+	    value: function onPostCreate() {
 	      this.props.actions.createPost(this.state.post);
 	    }
 	  }, {
@@ -30687,7 +30687,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var contents = _react2.default.createElement(_postEdit2.default, { post: this.state.post, completeText: 'Create', onPostComplete: this.onPostSave, onPostChange: this.onPostChange });
+	      var contents = _react2.default.createElement(_postEdit2.default, { post: this.state.post, completeText: 'Create', onPostComplete: this.onPostCreate, onPostChange: this.onPostChange });
 	
 	      return _react2.default.createElement(
 	        'div',

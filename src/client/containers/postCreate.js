@@ -9,7 +9,7 @@ import {listenToPost} from '../firebase'
 class PostContainer extends Component {
   constructor (props) {
     super(props);
-    this.onPostCreate = this.onPostSave.bind(this);
+    this.onPostCreate = this.onPostCreate.bind(this);
     this.onPostChange = this.onPostChange.bind(this);
     this.state = {
         post: {
@@ -22,7 +22,7 @@ class PostContainer extends Component {
     }
   }
 
-  onPostSave(){
+  onPostCreate(){
       this.props.actions.createPost(this.state.post);
   }
 
@@ -46,7 +46,7 @@ class PostContainer extends Component {
   }
 
   render () {
-    var contents = (<PostEdit post={this.state.post} completeText="Create" onPostComplete={this.onPostSave} onPostChange={this.onPostChange}/>);
+    var contents = (<PostEdit post={this.state.post} completeText="Create" onPostComplete={this.onPostCreate} onPostChange={this.onPostChange}/>);
 
     return (
         <div className="CenterHolder">

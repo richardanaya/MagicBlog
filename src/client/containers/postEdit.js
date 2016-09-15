@@ -10,7 +10,7 @@ class PostContainer extends Component {
   constructor (props) {
     super(props);
     this.ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID);
-    this.onPostCreate = this.onPostCreate.bind(this);
+    this.onPostSave = this.onPostSave.bind(this);
     this.onPostChange = this.onPostChange.bind(this);
     this.handlePost = this.handlePost.bind(this);
     this.state = {
@@ -23,7 +23,7 @@ class PostContainer extends Component {
     }
   }
 
-  onPostCreate(){
+  onPostSave(){
       this.props.actions.updatePost(this.props.params.postID,this.state.post);
   }
 
@@ -56,7 +56,7 @@ class PostContainer extends Component {
   }
 
   render () {
-    var contents = (<PostEdit post={this.state.post} completeText="Save" onPostComplete={this.onPostCreate} onPostChange={this.onPostChange}/>);
+    var contents = (<PostEdit post={this.state.post} completeText="Save" onPostComplete={this.onPostSave} onPostChange={this.onPostChange}/>);
 
     return (
         <div className="CenterHolder">
