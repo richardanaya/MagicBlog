@@ -1,5 +1,4 @@
 import store from './store'
-import {updateViewingPost} from './actions'
 
 var config = {
   apiKey: "AIzaSyCuK7mCcImTdoTFEROZkI37Ab1Ub4rJkgk",

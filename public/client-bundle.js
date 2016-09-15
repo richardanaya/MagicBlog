@@ -21542,13 +21542,11 @@
 /* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	var _store = __webpack_require__(173);
 	
 	var _store2 = _interopRequireDefault(_store);
-	
-	var _actions = __webpack_require__(175);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -21611,16 +21609,11 @@
 	        name: "",
 	        picture: "",
 	        userID: null,
-	        loginToken: null,
-	        viewingPost: null
+	        loginToken: null
 	    } : arguments[0];
 	    var action = arguments[1];
 	
 	    switch (action.type) {
-	        case _actions.UPDATE_VIEWING_POST:
-	            return _extends({}, state, {
-	                viewingPost: action.post
-	            });
 	        case _actions.LOGIN:
 	            localStorage.setItem('id_token', action.loginToken);
 	            return _extends({}, state, {
@@ -21665,7 +21658,6 @@
 	
 	exports.createPost = createPost;
 	exports.updatePost = updatePost;
-	exports.updateViewingPost = updateViewingPost;
 	exports.auth0Login = auth0Login;
 	exports.auth0Logout = auth0Logout;
 	exports.login = login;
@@ -21724,13 +21716,6 @@
 	      });
 	      dispatch((0, _reactRouterRedux.push)('/post/' + uid + "/" + key));
 	    });
-	  };
-	}
-	
-	function updateViewingPost(post) {
-	  return {
-	    type: UPDATE_VIEWING_POST,
-	    post: post
 	  };
 	}
 	
@@ -30428,7 +30413,7 @@
 	
 	
 	// module
-	exports.push([module.id, "/**\n * Copyright 2015 Google Inc. All Rights Reserved.\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *      http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\nhtml,\nbody {\n  font-family: 'Roboto', 'Helvetica', sans-serif;\n  margin: 0;\n  padding: 0;\n}\n.mdl-layout__header h3 {\n  text-align: center;\n  width: 100%;\n  font-weight: 200;\n}\n@media screen and (max-width: 1024px) {\n  .mdl-layout__header {\n    display: block;\n  }\n  .mdl-layout__header h3 {\n    font-size: 30px;\n  }\n}\n@media (max-width: 839px) and (min-width: 480px) {\n  .mdl-grid--no-spacing > .mdl-cell--6-col,\n  .mdl-grid--no-spacing > .mdl-cell--6-col-tablet.mdl-cell--6-col-tablet {\n    width: 100%;\n  }\n}\n.mdl-layout__tab-bar {\n  width: 100%;\n  height: 50px;\n  text-align: center;\n}\n.LinkHolder {\n  width: 100%;\n  text-align: center;\n}\n.LinkHolder .mdl-layout__tab {\n  display: inline-block;\n  float: none;\n}\n.PostSummary {\n  padding: 15px;\n  width: 100%;\n  text-decoration: none;\n}\n.PostSummary .PostSummary-title {\n  line-height: 45px;\n  font-size: 30px;\n  font-weight: 200;\n}\n.PostSummary .PostSummary-subtitle {\n  color: black;\n  font-size: 12px;\n  line-height: 20px;\n}\n.PostSummary .PostSummary-summary {\n  color: black;\n  font-weight: 200;\n}\n.mdl-layout__content {\n  width: 100%;\n}\n.CenterHolder {\n  width: 100%;\n  text-align: center;\n  padding-top: 15px;\n}\n.CenterHolder .CenterHolder {\n  display: inline-block;\n}\n.CenterHolder .CenterHolder .mdl-grid {\n  text-align: left;\n  max-width: 800px;\n}\n.Footer {\n  text-align: center;\n  margin-bottom: 30px;\n}\n.Footer .ViewSourceButton {\n  color: white;\n}\n.PostRead {\n  width: 100%;\n}\n.PostRead .PostRead-title {\n  line-height: 45px;\n  font-size: 30px;\n  font-weight: 200;\n}\n.PostRead .PostRead-subtitle {\n  color: black;\n  font-size: 12px;\n  line-height: 20px;\n}\n.PostRead .PostRead-content {\n  color: black;\n  font-weight: 200;\n  margin-bottom: 30px;\n}\n.PostEdit .mdl-textfield {\n  width: 100%;\n}\n.CommentEntry {\n  width: 100%;\n}\n.Comment {\n  font-weight: 200;\n}\n.Comment .mdl-button {\n  margin-top: 10px;\n}\n.ProfileUser img {\n  width: 30px;\n  height: 30px;\n  border-radius: 15px;\n  margin-right: 10px;\n  display: inline-block;\n}\n", ""]);
+	exports.push([module.id, "/**\n * Copyright 2015 Google Inc. All Rights Reserved.\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *      http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\nhtml,\nbody {\n  font-family: 'Roboto', 'Helvetica', sans-serif;\n  margin: 0;\n  padding: 0;\n}\n.mdl-layout__header h3 {\n  text-align: center;\n  width: 100%;\n  font-weight: 200;\n}\n@media screen and (max-width: 1024px) {\n  .mdl-layout__header {\n    display: block;\n  }\n  .mdl-layout__header h3 {\n    font-size: 30px;\n  }\n}\n@media (max-width: 839px) and (min-width: 480px) {\n  .mdl-grid--no-spacing > .mdl-cell--6-col,\n  .mdl-grid--no-spacing > .mdl-cell--6-col-tablet.mdl-cell--6-col-tablet {\n    width: 100%;\n  }\n}\n.mdl-layout__tab-bar {\n  width: 100%;\n  height: 50px;\n  text-align: center;\n}\n.LinkHolder {\n  width: 100%;\n  text-align: center;\n}\n.LinkHolder .mdl-layout__tab {\n  display: inline-block;\n  float: none;\n}\n.PostSummary {\n  padding: 15px;\n  width: 100%;\n  text-decoration: none;\n}\n.PostSummary .PostSummary-title {\n  line-height: 45px;\n  font-size: 30px;\n  font-weight: 200;\n}\n.PostSummary .PostSummary-subtitle {\n  color: black;\n  font-size: 12px;\n  line-height: 20px;\n}\n.PostSummary .PostSummary-summary {\n  color: black;\n  font-weight: 200;\n}\n.mdl-layout__content {\n  width: 100%;\n}\n.CenterHolder {\n  width: 100%;\n  text-align: center;\n  padding-top: 15px;\n}\n.CenterHolder .CenterHolder {\n  display: inline-block;\n}\n.CenterHolder .CenterHolder .mdl-grid {\n  text-align: left;\n  max-width: 800px;\n}\n.Footer {\n  text-align: center;\n  margin-top: 30px;\n  margin-bottom: 30px;\n}\n.Footer .ViewSourceButton {\n  color: white;\n}\n.PostRead {\n  width: 100%;\n}\n.PostRead .PostRead-title {\n  line-height: 45px;\n  font-size: 30px;\n  font-weight: 200;\n}\n.PostRead .PostRead-subtitle {\n  color: black;\n  font-size: 12px;\n  line-height: 20px;\n}\n.PostRead .PostRead-content {\n  color: black;\n  font-weight: 200;\n  margin-bottom: 30px;\n}\n.PostEdit .mdl-textfield {\n  width: 100%;\n}\n.CommentEntry {\n  width: 100%;\n}\n.Comment {\n  font-weight: 200;\n}\n.Comment .mdl-button {\n  margin-top: 10px;\n}\n.ProfileUser img {\n  width: 30px;\n  height: 30px;\n  border-radius: 15px;\n  margin-right: 10px;\n  display: inline-block;\n}\n", ""]);
 	
 	// exports
 

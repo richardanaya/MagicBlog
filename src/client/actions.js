@@ -53,13 +53,6 @@ export function updatePost(key,post){
   }
 }
 
-export function updateViewingPost(post){
-  return {
-      type: UPDATE_VIEWING_POST,
-      post
-  };
-}
-
 export function auth0Login(){
   return (dispatch)=>{
     browserHistory.push('/')

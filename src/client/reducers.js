@@ -7,15 +7,9 @@ export default function(state = {
     name: "",
     picture: "",
     userID: null,
-    loginToken : null,
-    viewingPost: null
+    loginToken : null
 }, action) {
     switch (action.type) {
-        case UPDATE_VIEWING_POST:
-            return {
-                ...state,
-                viewingPost: action.post
-            }
         case LOGIN:
             localStorage.setItem('id_token',action.loginToken);
             return {
