@@ -21570,6 +21570,10 @@
 	                userID: action.userID
 	            });
 	        case _actions.LOGOUT:
+	            localStorage.removeItem('userID');
+	            localStorage.removeItem('id_token');
+	            localStorage.removeItem('delegation_token');
+	            localStorage.removeItem('profile');
 	            return _extends({}, state, {
 	                name: "",
 	                picture: "",

@@ -18,6 +18,10 @@ export default function(state = {
                 userID:action.userID
             };
         case LOGOUT:
+            localStorage.removeItem('userID');
+            localStorage.removeItem('id_token');
+            localStorage.removeItem('delegation_token');
+            localStorage.removeItem('profile');
             return {
                 ...state,
                 name: "",
