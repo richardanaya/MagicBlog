@@ -9,8 +9,10 @@ import {listenToPost} from '../firebase'
 class PostContainer extends Component {
   constructor (props) {
     super(props);
+    this.ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID);
     this.onPostCreate = this.onPostCreate.bind(this);
     this.onPostChange = this.onPostChange.bind(this);
+    this.handlePost = this.handlePost.bind(this);
     this.state = {
         post: {
           title: "",
@@ -31,22 +33,26 @@ class PostContainer extends Component {
       this.setState(newState);
   }
 
-  componentDidMount() {
-    //get latest story
-    var ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID);
-    ref.on("value",(snapshot)=>{
-      if(!snapshot.exists()){
-        browserHistory.push("/")
-        return;
+  handlePost(snapshot){
+    if(!snapshot.exists()){
+      browserHistory.push("/")
+      return;
+    }
+    var latestPost = snapshot.val();
+    this.setState(
+      {
+        ...this.state,
+        post:latestPost
       }
-      var latestPost = snapshot.val();
-      this.setState(
-        {
-          ...this.state,
-          post:latestPost
-        }
-      )
-    })
+    )
+  }
+
+  componentDidMount() {
+    this.ref.on("value",this.handlePost)
+  }
+
+  componentWillUnmount() {
+    this.ref.off("value",this.handlePost)
   }
 
   render () {

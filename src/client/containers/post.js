@@ -22,11 +22,13 @@ class PostContainer extends Component {
         comments: [],
         newComment: ""
     }
+    this.ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID);
     this.onComment = this.onComment.bind(this);
     this.onCommentChange = this.onCommentChange.bind(this);
     this.onDelete = this.onDelete.bind(this);
     this.onEdit = this.onEdit.bind(this);
     this.onDeleteComment = this.onDeleteComment.bind(this);
+    this.onHandlePost = this.onHandlePost.bind(this);
   }
 
   onCommentChange(comment) {
@@ -38,7 +40,7 @@ class PostContainer extends Component {
 
   onDelete(){
     firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID).remove()
-    firebase.database().ref("/timeline").orderByChild("post_id").equalTo(this.props.params.postID).on("child_added", function(snapshot) {
+    firebase.database().ref("/timeline").orderByChild("post_id").equalTo(this.props.params.postID).once("child_added", function(snapshot) {
       firebase.database().ref("/timeline/"+snapshot.key).remove()
     });
   }
@@ -67,29 +69,34 @@ class PostContainer extends Component {
     firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID+"/comments/"+key).remove();
   }
 
+  onHandlePost(snapshot){
+    if(!snapshot.exists()){
+      browserHistory.push("/")
+      return;
+    }
+    var latestPost = snapshot.val();
+    var comments = [];
+    for(var i in latestPost.comments){
+      var comment = latestPost.comments[i];
+      comment.id = i;
+      comments.push(comment);
+    }
+    this.setState(
+      {
+        ...this.state,
+        post:latestPost,
+        comments: comments
+      }
+    )
+  }
+
   componentDidMount() {
     //get latest story
-    var ref = firebase.database().ref("/posts/"+this.props.params.userID+"/"+this.props.params.postID);
-    ref.on("value",(snapshot)=>{
-      if(!snapshot.exists()){
-        browserHistory.push("/")
-        return;
-      }
-      var latestPost = snapshot.val();
-      var comments = [];
-      for(var i in latestPost.comments){
-        var comment = latestPost.comments[i];
-        comment.id = i;
-        comments.push(comment);
-      }
-      this.setState(
-        {
-          ...this.state,
-          post:latestPost,
-          comments: comments
-        }
-      )
-    })
+    this.ref.on("value",this.onHandlePost)
+  }
+
+  componentWillUnmount(){
+    this.ref.off("value",this.onHandlePost)
   }
 
   render () {

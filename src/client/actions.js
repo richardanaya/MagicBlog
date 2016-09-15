@@ -39,7 +39,7 @@ export function updatePost(key,post){
     firebase.database().ref("/posts/"+uid+"/"+key).set(
       post
     ).then(function(){
-        firebase.database().ref("/timeline").orderByChild("post_id").equalTo(key).on("child_added", function(snapshot) {
+        firebase.database().ref("/timeline").orderByChild("post_id").equalTo(key).once("child_added", function(snapshot) {
           var timeline = snapshot.val();
           var newTimeline = {
             ...timeline,

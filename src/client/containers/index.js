@@ -10,18 +10,24 @@ class IndexContainer extends Component {
     this.state = {
       timeline:[]
     }
-    //this.handleOnFilterChange = this.handleOnFilterChange.bind(this);
+    this.ref = firebase.database().ref("/timeline");
+    this.handleTimeline = this.handleTimeline.bind(this);
+  }
+
+  handleTimeline(snapshot){
+    this.setState(
+      {
+        timeline:snapshot.val()
+      }
+    )
   }
 
   componentDidMount() {
-    var ref = firebase.database().ref("/timeline");
-    ref.on("value",(snapshot)=>{
-      this.setState(
-        {
-          timeline:snapshot.val()
-        }
-      )
-    })
+    this.ref.on("value",this.handleTimeline);
+  }
+
+  componentWillUnmount() {
+    this.ref.off("value",this.handleTimeline);
   }
 
   render () {

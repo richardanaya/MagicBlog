@@ -21716,7 +21716,7 @@
 	  return function (dispatch, getState) {
 	    var uid = getState().app.userID;
 	    firebase.database().ref("/posts/" + uid + "/" + key).set(post).then(function () {
-	      firebase.database().ref("/timeline").orderByChild("post_id").equalTo(key).on("child_added", function (snapshot) {
+	      firebase.database().ref("/timeline").orderByChild("post_id").equalTo(key).once("child_added", function (snapshot) {
 	        var timeline = snapshot.val();
 	        var newTimeline = _extends({}, timeline, {
 	          title: post.title,
@@ -29562,21 +29562,27 @@
 	    _this.state = {
 	      timeline: []
 	    };
-	    //this.handleOnFilterChange = this.handleOnFilterChange.bind(this);
+	    _this.ref = firebase.database().ref("/timeline");
+	    _this.handleTimeline = _this.handleTimeline.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(IndexContainer, [{
+	    key: 'handleTimeline',
+	    value: function handleTimeline(snapshot) {
+	      this.setState({
+	        timeline: snapshot.val()
+	      });
+	    }
+	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _this2 = this;
-	
-	      var ref = firebase.database().ref("/timeline");
-	      ref.on("value", function (snapshot) {
-	        _this2.setState({
-	          timeline: snapshot.val()
-	        });
-	      });
+	      this.ref.on("value", this.handleTimeline);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.ref.off("value", this.handleTimeline);
 	    }
 	  }, {
 	    key: 'render',
@@ -29746,11 +29752,13 @@
 	      comments: [],
 	      newComment: ""
 	    };
+	    _this.ref = firebase.database().ref("/posts/" + _this.props.params.userID + "/" + _this.props.params.postID);
 	    _this.onComment = _this.onComment.bind(_this);
 	    _this.onCommentChange = _this.onCommentChange.bind(_this);
 	    _this.onDelete = _this.onDelete.bind(_this);
 	    _this.onEdit = _this.onEdit.bind(_this);
 	    _this.onDeleteComment = _this.onDeleteComment.bind(_this);
+	    _this.onHandlePost = _this.onHandlePost.bind(_this);
 	    return _this;
 	  }
 	
@@ -29765,7 +29773,7 @@
 	    key: 'onDelete',
 	    value: function onDelete() {
 	      firebase.database().ref("/posts/" + this.props.params.userID + "/" + this.props.params.postID).remove();
-	      firebase.database().ref("/timeline").orderByChild("post_id").equalTo(this.props.params.postID).on("child_added", function (snapshot) {
+	      firebase.database().ref("/timeline").orderByChild("post_id").equalTo(this.props.params.postID).once("child_added", function (snapshot) {
 	        firebase.database().ref("/timeline/" + snapshot.key).remove();
 	      });
 	    }
@@ -29798,37 +29806,42 @@
 	      firebase.database().ref("/posts/" + this.props.params.userID + "/" + this.props.params.postID + "/comments/" + key).remove();
 	    }
 	  }, {
+	    key: 'onHandlePost',
+	    value: function onHandlePost(snapshot) {
+	      if (!snapshot.exists()) {
+	        _reactRouter.browserHistory.push("/");
+	        return;
+	      }
+	      var latestPost = snapshot.val();
+	      var comments = [];
+	      for (var i in latestPost.comments) {
+	        var comment = latestPost.comments[i];
+	        comment.id = i;
+	        comments.push(comment);
+	      }
+	      this.setState(_extends({}, this.state, {
+	        post: latestPost,
+	        comments: comments
+	      }));
+	    }
+	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _this3 = this;
-	
 	      //get latest story
-	      var ref = firebase.database().ref("/posts/" + this.props.params.userID + "/" + this.props.params.postID);
-	      ref.on("value", function (snapshot) {
-	        if (!snapshot.exists()) {
-	          _reactRouter.browserHistory.push("/");
-	          return;
-	        }
-	        var latestPost = snapshot.val();
-	        var comments = [];
-	        for (var i in latestPost.comments) {
-	          var comment = latestPost.comments[i];
-	          comment.id = i;
-	          comments.push(comment);
-	        }
-	        _this3.setState(_extends({}, _this3.state, {
-	          post: latestPost,
-	          comments: comments
-	        }));
-	      });
+	      this.ref.on("value", this.onHandlePost);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.ref.off("value", this.onHandlePost);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this4 = this;
+	      var _this3 = this;
 	
 	      var comments = this.state.comments.map(function (c) {
-	        return _react2.default.createElement(_comment2.default, { key: c.id, cid: c.id, comment: c.comment, name: c.name, datetime: c.datetime, isMine: c.creator == _this4.props.app.userID, onDeleteComment: _this4.onDeleteComment });
+	        return _react2.default.createElement(_comment2.default, { key: c.id, cid: c.id, comment: c.comment, name: c.name, datetime: c.datetime, isMine: c.creator == _this3.props.app.userID, onDeleteComment: _this3.onDeleteComment });
 	      });
 	
 	      var commentsEntry = this.props.app.loginToken == null ? null : _react2.default.createElement(_commentEntryArea2.default, { name: this.props.app.name, newComment: this.state.newComment, onComment: this.onComment, onCommentChange: this.onCommentChange });
@@ -30147,8 +30160,10 @@
 	
 	    var _this = _possibleConstructorReturn(this, (PostContainer.__proto__ || Object.getPrototypeOf(PostContainer)).call(this, props));
 	
+	    _this.ref = firebase.database().ref("/posts/" + _this.props.params.userID + "/" + _this.props.params.postID);
 	    _this.onPostCreate = _this.onPostCreate.bind(_this);
 	    _this.onPostChange = _this.onPostChange.bind(_this);
+	    _this.handlePost = _this.handlePost.bind(_this);
 	    _this.state = {
 	      post: {
 	        title: "",
@@ -30173,22 +30188,26 @@
 	      this.setState(newState);
 	    }
 	  }, {
+	    key: 'handlePost',
+	    value: function handlePost(snapshot) {
+	      if (!snapshot.exists()) {
+	        browserHistory.push("/");
+	        return;
+	      }
+	      var latestPost = snapshot.val();
+	      this.setState(_extends({}, this.state, {
+	        post: latestPost
+	      }));
+	    }
+	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _this2 = this;
-	
-	      //get latest story
-	      var ref = firebase.database().ref("/posts/" + this.props.params.userID + "/" + this.props.params.postID);
-	      ref.on("value", function (snapshot) {
-	        if (!snapshot.exists()) {
-	          browserHistory.push("/");
-	          return;
-	        }
-	        var latestPost = snapshot.val();
-	        _this2.setState(_extends({}, _this2.state, {
-	          post: latestPost
-	        }));
-	      });
+	      this.ref.on("value", this.handlePost);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.ref.off("value", this.handlePost);
 	    }
 	  }, {
 	    key: 'render',
