@@ -120,6 +120,7 @@ export function auth0Login(){
 
 export function auth0Logout(){
   return (dispatch)=>{
+    localStorage.removeItem('userID');
     localStorage.removeItem('id_token');
     localStorage.removeItem('delegation_token');
     localStorage.removeItem('profile');
